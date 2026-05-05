@@ -1,0 +1,180 @@
+/* ===== REGISTER PAGE ===== */
+
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  background: linear-gradient(135deg, #f0f2f8 0%, #e8e6f0 50%, #f0f2f8 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Decorations */
+.register-page__bg-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.register-page__bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.06;
+}
+
+.register-page__bg-circle--1 {
+  width: 450px;
+  height: 450px;
+  background: var(--accent-500);
+  top: -120px;
+  left: -100px;
+  animation: pulse 7s ease-in-out infinite;
+}
+
+.register-page__bg-circle--2 {
+  width: 300px;
+  height: 300px;
+  background: var(--primary-500);
+  bottom: -80px;
+  right: -60px;
+  animation: pulse 6s ease-in-out infinite 1s;
+}
+
+.register-page__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Logo */
+.register-page__logo {
+  display: flex;
+  align-items: center;
+}
+
+.register-page__logo-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  border: 3px solid #ffffff;
+}
+
+/* Card */
+.register-page__card {
+  width: 100%;
+  background: var(--bg-surface);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.register-page__title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--slate-900);
+  text-align: center;
+  margin-bottom: var(--space-1);
+}
+
+.register-page__desc {
+  font-size: var(--font-size-sm);
+  color: var(--slate-500);
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+/* Form */
+.register-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.register-page__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.register-page__label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--slate-700);
+}
+
+.register-page__input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  color: var(--slate-800);
+  background: var(--bg-surface);
+  transition: all var(--transition-fast);
+}
+
+.register-page__input:focus {
+  border-color: var(--primary-400);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.register-page__input--error {
+  border-color: var(--danger-500);
+}
+
+.register-page__input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.register-page__error {
+  font-size: var(--font-size-xs);
+  color: var(--danger-500);
+  font-weight: 500;
+}
+
+/* Actions */
+.register-page__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+
+.register-page__link {
+  font-size: var(--font-size-sm);
+  color: var(--primary-600);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.register-page__link:hover {
+  color: var(--primary-800);
+}
+
+.register-page__btn {
+  padding: var(--space-3) var(--space-6);
+  background: linear-gradient(135deg, var(--primary-900), var(--primary-800));
+  color: #ffffff;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  transition: all var(--transition-base);
+}
+
+.register-page__btn:hover {
+  background: linear-gradient(135deg, var(--primary-800), var(--primary-700));
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+}

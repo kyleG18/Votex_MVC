@@ -1,0 +1,34 @@
+/* ===== VOTE CHART COMPONENT ===== */
+
+.vote-chart {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--slate-100);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  animation: fadeIn var(--transition-slow) ease-out 0.2s;
+  animation-fill-mode: backwards;
+}
+
+.vote-chart__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-6) var(--space-3);
+}
+
+.vote-chart__icon {
+  font-size: 1.25rem;
+}
+
+.vote-chart__title {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--slate-800);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.vote-chart__body {
+  padding: var(--space-2) var(--space-4) var(--space-4);
+}

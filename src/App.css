@@ -1,0 +1,15 @@
+/* ===== APP LAYOUT ===== */
+
+/* Admin Layout */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-layout__content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: var(--space-8);
+  background: var(--bg-primary);
+  min-height: 100vh;
+}

@@ -1,0 +1,218 @@
+{
+  "positions": [
+    "President",
+    "Vice-President",
+    "Secretary",
+    "Treasurer",
+    "Auditor"
+  ],
+  "candidates": [
+    {
+      "id": 1,
+      "name": "Jane Doe",
+      "position": "President",
+      "party": "Student Progressive Party",
+      "voterId": "20250001",
+      "bio": "A passionate student leader with a vision for a more inclusive campus.",
+      "votes": 35
+    },
+    {
+      "id": 2,
+      "name": "John Smith",
+      "position": "President",
+      "party": "Unity Alliance",
+      "voterId": "20250002",
+      "bio": "Dedicated to academic excellence and student welfare programs.",
+      "votes": 19
+    },
+    {
+      "id": 3,
+      "name": "Emily Chen",
+      "position": "President",
+      "party": "Student Progressive Party",
+      "voterId": "20250003",
+      "bio": "Advocating for modern campus facilities and digital transformation.",
+      "votes": 26
+    },
+    {
+      "id": 4,
+      "name": "Chris Lee",
+      "position": "President",
+      "party": "Future Leaders Party",
+      "voterId": "20250004",
+      "bio": "Committed to sustainability and environmental initiatives on campus.",
+      "votes": 7
+    },
+    {
+      "id": 5,
+      "name": "Anya Sharma",
+      "position": "President",
+      "party": "Unity Alliance",
+      "voterId": "20250005",
+      "bio": "Focused on mental health awareness and student support services.",
+      "votes": 14
+    },
+    {
+      "id": 6,
+      "name": "Marco Rivera",
+      "position": "Vice-President",
+      "party": "Student Progressive Party",
+      "voterId": "20250006",
+      "bio": "Strong advocate for transparent student governance.",
+      "votes": 42
+    },
+    {
+      "id": 7,
+      "name": "Sofia Garcia",
+      "position": "Vice-President",
+      "party": "Unity Alliance",
+      "voterId": "20250007",
+      "bio": "Experienced in campus event management and student engagement.",
+      "votes": 31
+    },
+    {
+      "id": 8,
+      "name": "Daniel Kim",
+      "position": "Vice-President",
+      "party": "Future Leaders Party",
+      "voterId": "20250008",
+      "bio": "Promoting technology-driven solutions for student services.",
+      "votes": 18
+    },
+    {
+      "id": 9,
+      "name": "Isabella Santos",
+      "position": "Secretary",
+      "party": "Student Progressive Party",
+      "voterId": "20250009",
+      "bio": "Detail-oriented and committed to organized documentation.",
+      "votes": 38
+    },
+    {
+      "id": 10,
+      "name": "Nathan Cruz",
+      "position": "Secretary",
+      "party": "Unity Alliance",
+      "voterId": "20250010",
+      "bio": "Bringing efficiency and digital record-keeping to the council.",
+      "votes": 29
+    },
+    {
+      "id": 11,
+      "name": "Mia Torres",
+      "position": "Treasurer",
+      "party": "Student Progressive Party",
+      "voterId": "20250011",
+      "bio": "Finance major with expertise in budgeting and resource management.",
+      "votes": 44
+    },
+    {
+      "id": 12,
+      "name": "Liam Park",
+      "position": "Treasurer",
+      "party": "Future Leaders Party",
+      "voterId": "20250012",
+      "bio": "Transparent financial planning for student organizations.",
+      "votes": 22
+    },
+    {
+      "id": 13,
+      "name": "Grace Reyes",
+      "position": "Auditor",
+      "party": "Unity Alliance",
+      "voterId": "20250013",
+      "bio": "Ensuring accountability and proper allocation of student funds.",
+      "votes": 36
+    },
+    {
+      "id": 14,
+      "name": "Ethan Flores",
+      "position": "Auditor",
+      "party": "Student Progressive Party",
+      "voterId": "20250014",
+      "bio": "Dedicated to transparent and fair auditing processes.",
+      "votes": 28
+    }
+  ],
+  "students": [
+    {
+      "id": 1,
+      "studentId": "12345-AB-6789",
+      "name": "Maria Clara Dela Cruz",
+      "email": "maria.delacruz@jpc.edu.ph",
+      "course": "BSIT",
+      "yearLevel": "3rd Year",
+      "hasVoted": true
+    },
+    {
+      "id": 2,
+      "studentId": "12345-CD-1234",
+      "name": "Juan Carlos Santos",
+      "email": "juan.santos@jpc.edu.ph",
+      "course": "BSCS",
+      "yearLevel": "2nd Year",
+      "hasVoted": false
+    },
+    {
+      "id": 3,
+      "studentId": "12345-EF-5678",
+      "name": "Ana Marie Lopez",
+      "email": "ana.lopez@jpc.edu.ph",
+      "course": "BSIT",
+      "yearLevel": "4th Year",
+      "hasVoted": true
+    },
+    {
+      "id": 4,
+      "studentId": "12345-GH-9012",
+      "name": "Miguel Angelo Reyes",
+      "email": "miguel.reyes@jpc.edu.ph",
+      "course": "BSEd",
+      "yearLevel": "1st Year",
+      "hasVoted": false
+    },
+    {
+      "id": 5,
+      "studentId": "12345-IJ-3456",
+      "name": "Sofia Beatrice Cruz",
+      "email": "sofia.cruz@jpc.edu.ph",
+      "course": "BSBA",
+      "yearLevel": "3rd Year",
+      "hasVoted": true
+    },
+    {
+      "id": 6,
+      "studentId": "12345-KL-7890",
+      "name": "Rafael James Garcia",
+      "email": "rafael.garcia@jpc.edu.ph",
+      "course": "BSIT",
+      "yearLevel": "2nd Year",
+      "hasVoted": true
+    },
+    {
+      "id": 7,
+      "studentId": "12345-MN-2345",
+      "name": "Camille Rose Navarro",
+      "email": "camille.navarro@jpc.edu.ph",
+      "course": "BSCS",
+      "yearLevel": "4th Year",
+      "hasVoted": false
+    },
+    {
+      "id": 8,
+      "studentId": "12345-OP-6789",
+      "name": "Andrei Paul Mendoza",
+      "email": "andrei.mendoza@jpc.edu.ph",
+      "course": "BSIT",
+      "yearLevel": "1st Year",
+      "hasVoted": true
+    }
+  ],
+  "electionInfo": {
+    "title": "Student Council Election 2026",
+    "startDate": "2026-04-25",
+    "endDate": "2026-04-28",
+    "totalRegisteredVoters": 12500,
+    "totalVotesCast": 7890
+  }
+}

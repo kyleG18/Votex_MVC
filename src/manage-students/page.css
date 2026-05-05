@@ -1,0 +1,190 @@
+/* ===== MANAGE STUDENTS PAGE ===== */
+
+.manage-students {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Header */
+.manage-students__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.manage-students__title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--slate-900);
+  margin-bottom: 2px;
+}
+
+.manage-students__subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--slate-500);
+}
+
+/* Toolbar */
+.manage-students__toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.manage-students__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.manage-students__search-icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--slate-400);
+  font-size: 1.1rem;
+}
+
+.manage-students__search-input {
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-10);
+  border: 2px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  color: var(--slate-700);
+  width: 280px;
+  background: var(--bg-surface);
+  transition: all var(--transition-fast);
+}
+
+.manage-students__search-input:focus {
+  border-color: var(--primary-400);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.manage-students__filters {
+  display: flex;
+  gap: var(--space-1);
+  background: var(--slate-100);
+  border-radius: var(--radius-lg);
+  padding: 3px;
+}
+
+.manage-students__filter-btn {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--slate-600);
+  background: transparent;
+  transition: all var(--transition-fast);
+}
+
+.manage-students__filter-btn:hover {
+  color: var(--slate-800);
+}
+
+.manage-students__filter-btn--active {
+  background: var(--bg-surface);
+  color: var(--primary-700);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Table Container */
+.manage-students__table-container {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--slate-100);
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.manage-students__table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.manage-students__table thead tr {
+  background: var(--slate-50);
+}
+
+.manage-students__table th {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--slate-200);
+  white-space: nowrap;
+}
+
+.manage-students__table tbody tr {
+  animation: fadeIn var(--transition-base) ease-out;
+  animation-fill-mode: backwards;
+  transition: background var(--transition-fast);
+}
+
+.manage-students__table tbody tr:hover {
+  background: var(--slate-50);
+}
+
+.manage-students__table td {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--slate-700);
+  border-bottom: 1px solid var(--slate-100);
+  vertical-align: middle;
+}
+
+.manage-students__id {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: var(--font-size-xs);
+  background: var(--slate-100);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--slate-600);
+}
+
+.manage-students__name {
+  font-weight: 600;
+  color: var(--slate-800);
+}
+
+.manage-students__email {
+  color: var(--slate-500);
+}
+
+/* Voting Status */
+.manage-students__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.manage-students__status--voted {
+  background: var(--success-100);
+  color: #059669;
+}
+
+.manage-students__status--pending {
+  background: var(--warning-100);
+  color: #d97706;
+}
+
+/* Empty State */
+.manage-students__empty {
+  padding: var(--space-12);
+  text-align: center;
+  color: var(--slate-400);
+  font-size: var(--font-size-sm);
+}

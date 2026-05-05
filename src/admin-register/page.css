@@ -1,0 +1,275 @@
+/* ===== ADMIN REGISTER PAGE ===== */
+
+.admin-register {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-6);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Decorations */
+.admin-register__bg-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.admin-register__bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.05;
+}
+
+.admin-register__bg-circle--1 {
+  width: 600px;
+  height: 600px;
+  background: var(--primary-400);
+  top: -200px;
+  right: -150px;
+  animation: pulse 8s ease-in-out infinite;
+}
+
+.admin-register__bg-circle--2 {
+  width: 400px;
+  height: 400px;
+  background: var(--accent-400);
+  bottom: -150px;
+  left: -100px;
+  animation: pulse 10s ease-in-out infinite 1s;
+}
+
+/* Container */
+.admin-register__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Logo */
+.admin-register__logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.admin-register__logo-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.admin-register__logo-text {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+/* Card */
+.admin-register__card {
+  width: 100%;
+  background: var(--bg-surface);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--slate-200);
+  animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Header */
+.admin-register__card-header {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.admin-register__shield-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
+  color: var(--primary-600);
+  font-size: 1.5rem;
+  margin-bottom: var(--space-3);
+}
+
+.admin-register__title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--slate-900);
+  margin-bottom: var(--space-2);
+}
+
+.admin-register__desc {
+  font-size: var(--font-size-sm);
+  color: var(--slate-500);
+  line-height: 1.5;
+}
+
+/* Alerts */
+.admin-register__alert {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin-bottom: var(--space-5);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.admin-register__alert--error {
+  background: var(--danger-50);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+}
+
+.admin-register__alert--success {
+  background: var(--success-50);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: #059669;
+}
+
+/* Form Fields */
+.admin-register__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.admin-register__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.admin-register__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--slate-700);
+}
+
+.admin-register__input {
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  color: var(--slate-700);
+  background: #f8fafc;
+  transition: all var(--transition-fast);
+}
+
+.admin-register__input:focus {
+  border-color: var(--primary-400);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  background: #ffffff;
+  outline: none;
+}
+
+/* Highlighted Security Field */
+.admin-register__field--highlight {
+  margin-top: var(--space-2);
+  padding: var(--space-4);
+  background: var(--slate-50);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+}
+
+.admin-register__key-icon {
+  color: var(--accent-500);
+}
+
+.admin-register__hint {
+  font-size: var(--font-size-xs);
+  color: var(--slate-500);
+  margin-bottom: var(--space-1);
+}
+
+.admin-register__input--key {
+  border-color: var(--accent-300);
+  background: #ffffff;
+  letter-spacing: 2px;
+  font-family: monospace;
+}
+
+.admin-register__input--key:focus {
+  border-color: var(--accent-500);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Button */
+.admin-register__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3) var(--space-6);
+  background: linear-gradient(135deg, var(--primary-900), var(--primary-800));
+  color: #ffffff;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  transition: all var(--transition-base);
+  margin-top: var(--space-2);
+}
+
+.admin-register__btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--primary-800), var(--primary-700));
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  transform: translateY(-2px);
+}
+
+.admin-register__btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.admin-register__spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Footer */
+.admin-register__footer {
+  text-align: center;
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--slate-100);
+}
+
+.admin-register__back-link {
+  font-size: var(--font-size-sm);
+  color: var(--primary-600);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.admin-register__back-link:hover {
+  color: var(--primary-800);
+}

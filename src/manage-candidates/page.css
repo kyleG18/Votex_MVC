@@ -1,0 +1,265 @@
+/* ===== MANAGE CANDIDATES PAGE ===== */
+
+.manage-candidates {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Header */
+.manage-candidates__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.manage-candidates__title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--slate-900);
+  margin-bottom: 2px;
+}
+
+.manage-candidates__subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--slate-500);
+}
+
+/* Toolbar */
+.manage-candidates__toolbar {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.manage-candidates__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.manage-candidates__search-icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--slate-400);
+  font-size: 1.1rem;
+}
+
+.manage-candidates__search-input {
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-10);
+  border: 2px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  color: var(--slate-700);
+  width: 220px;
+  background: var(--bg-surface);
+  transition: all var(--transition-fast);
+}
+
+.manage-candidates__search-input:focus {
+  border-color: var(--primary-400);
+  width: 280px;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.manage-candidates__add-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+  color: #ffffff;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  transition: all var(--transition-base);
+}
+
+.manage-candidates__add-btn:hover {
+  background: linear-gradient(135deg, var(--primary-700), var(--primary-800));
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* Table Container */
+.manage-candidates__table-container {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--slate-100);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* Pagination */
+.manage-candidates__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+}
+
+.manage-candidates__page-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--slate-200);
+  background: var(--bg-surface);
+  color: var(--slate-600);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.manage-candidates__page-btn:hover:not(:disabled) {
+  border-color: var(--primary-400);
+  color: var(--primary-600);
+}
+
+.manage-candidates__page-btn--active {
+  background: var(--primary-600);
+  border-color: var(--primary-600);
+  color: #ffffff;
+}
+
+.manage-candidates__page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Modal */
+.manage-candidates__modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.manage-candidates__modal {
+  background: var(--bg-surface);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-6);
+  max-width: 560px;
+  width: 90%;
+  box-shadow: var(--shadow-xl);
+  animation: scaleIn 0.3s ease-out;
+}
+
+.manage-candidates__modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-5);
+}
+
+.manage-candidates__modal-header h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.manage-candidates__modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--slate-100);
+  color: var(--slate-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all var(--transition-fast);
+}
+
+.manage-candidates__modal-close:hover {
+  background: var(--slate-200);
+}
+
+.manage-candidates__modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.manage-candidates__form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.manage-candidates__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.manage-candidates__field label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--slate-700);
+}
+
+.manage-candidates__field input,
+.manage-candidates__field select,
+.manage-candidates__field textarea {
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--slate-200);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--slate-700);
+  transition: border-color var(--transition-fast);
+  resize: vertical;
+}
+
+.manage-candidates__field input:focus,
+.manage-candidates__field select:focus,
+.manage-candidates__field textarea:focus {
+  border-color: var(--primary-400);
+}
+
+.manage-candidates__modal-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  padding-top: var(--space-2);
+}
+
+.manage-candidates__btn--cancel {
+  padding: var(--space-2) var(--space-4);
+  background: var(--slate-100);
+  color: var(--slate-700);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.manage-candidates__btn--cancel:hover {
+  background: var(--slate-200);
+}
+
+.manage-candidates__btn--save {
+  padding: var(--space-2) var(--space-5);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  transition: all var(--transition-base);
+}
+
+.manage-candidates__btn--save:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}

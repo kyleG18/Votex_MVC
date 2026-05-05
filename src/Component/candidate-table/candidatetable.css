@@ -1,0 +1,134 @@
+/* ===== CANDIDATE TABLE COMPONENT ===== */
+
+.candidate-table__wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+}
+
+.candidate-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.candidate-table thead tr {
+  background: var(--slate-50);
+}
+
+.candidate-table th {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--slate-200);
+  white-space: nowrap;
+}
+
+.candidate-table tbody tr {
+  animation: fadeIn var(--transition-base) ease-out;
+  animation-fill-mode: backwards;
+  transition: background var(--transition-fast);
+}
+
+.candidate-table tbody tr:hover {
+  background: var(--slate-50);
+}
+
+.candidate-table td {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--slate-700);
+  border-bottom: 1px solid var(--slate-100);
+  vertical-align: middle;
+}
+
+/* Avatar */
+.candidate-table__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--primary-200), var(--primary-300));
+  color: var(--primary-800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+/* Name */
+.candidate-table__name {
+  font-weight: 600;
+  color: var(--slate-800);
+}
+
+/* Party Badge */
+.candidate-table__party-badge {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  background: var(--primary-50);
+  color: var(--primary-700);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+/* Voter ID */
+.candidate-table__id {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: var(--font-size-xs);
+  background: var(--slate-100);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--slate-600);
+}
+
+/* Bio */
+.candidate-table__bio {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 200px;
+  color: var(--slate-500);
+  font-size: var(--font-size-xs);
+}
+
+/* Actions */
+.candidate-table__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.candidate-table__btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all var(--transition-fast);
+  background: transparent;
+}
+
+.candidate-table__btn--edit {
+  color: var(--primary-600);
+}
+
+.candidate-table__btn--edit:hover {
+  background: var(--primary-50);
+  color: var(--primary-700);
+}
+
+.candidate-table__btn--delete {
+  color: var(--danger-500);
+}
+
+.candidate-table__btn--delete:hover {
+  background: var(--danger-100);
+  color: #dc2626;
+}

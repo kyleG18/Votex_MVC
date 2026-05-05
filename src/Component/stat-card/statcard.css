@@ -1,0 +1,80 @@
+/* ===== STAT CARD COMPONENT ===== */
+
+.stat-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--slate-100);
+  transition: all var(--transition-base);
+  animation: slideInUp var(--transition-slow) ease-out;
+  animation-fill-mode: backwards;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.05s; }
+.stat-card:nth-child(2) { animation-delay: 0.1s; }
+.stat-card:nth-child(3) { animation-delay: 0.15s; }
+
+.stat-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.stat-card__icon-wrapper {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Color Variants */
+.stat-card--primary .stat-card__icon-wrapper {
+  background: var(--primary-50);
+  color: var(--primary-600);
+}
+
+.stat-card--success .stat-card__icon-wrapper {
+  background: var(--success-100);
+  color: var(--success-500);
+}
+
+.stat-card--warning .stat-card__icon-wrapper {
+  background: var(--warning-100);
+  color: var(--warning-500);
+}
+
+.stat-card--accent .stat-card__icon-wrapper {
+  background: #f3e8ff;
+  color: var(--accent-600);
+}
+
+.stat-card__content {
+  min-width: 0;
+}
+
+.stat-card__title {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--slate-500);
+  margin-bottom: var(--space-1);
+}
+
+.stat-card__value {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--slate-900);
+  line-height: 1.2;
+}
+
+.stat-card__subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--slate-400);
+  margin-top: var(--space-1);
+}
