@@ -70,6 +70,12 @@
   color: var(--primary-500);
 }
 
+.manage-admins__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
 .manage-admins__card {
   display: flex;
   align-items: center;
@@ -166,4 +172,24 @@
   padding: var(--space-10) 0;
   color: var(--slate-500);
   font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .manage-admins__container {
+    padding: var(--space-4);
+  }
+  .manage-admins__card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  .manage-admins__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .btn-approve, .btn-reject {
+    flex: 1;
+    justify-content: center;
+  }
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { HiOutlineShieldCheck, HiOutlineKey, HiOutlineUser, HiOutlineLockClosed } from 'react-icons/hi2';
 import './page.css';
 
@@ -19,7 +20,7 @@ function AdminRegisterPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
@@ -31,36 +32,23 @@ function AdminRegisterPage() {
 
     setIsLoading(true);
 
-    // Simulate server delay
-    setTimeout(() => {
-      // Validate Authorization Key first
-      const SECRET_AUTH_KEY = 'JPC-ADMIN-2026';
-
-      if (formData.authKey !== SECRET_AUTH_KEY) {
-        setErrorMsg('Invalid Authorization Key. You are not authorized to apply for an admin account.');
-        setIsLoading(false);
-        return;
-      }
-
-      // Create pending admin object
-      const newAdmin = {
-        fullName: formData.fullName,
-        username: formData.username,
-        password: formData.password,
-        status: 'pending',
-        dateApplied: new Date().toLocaleDateString()
-      };
-
-      // Save to localStorage
-      localStorage.setItem('votex_new_admin', JSON.stringify(newAdmin));
+    try {
+      const response = await axios.post('http://localhost:5000/api/admins/register', formData);
       
-      setSuccessMsg('Registration submitted! Please wait for a Super Admin to approve your account.');
+      setSuccessMsg(response.data.message);
       
       setTimeout(() => {
         navigate('/admin-login');
       }, 3000);
-
-    }, 1500);
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setErrorMsg(error.response.data.message);
+      } else {
+        setErrorMsg('Failed to connect to the server. Please ensure the backend is running.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -72,22 +60,15 @@ function AdminRegisterPage() {
       </div>
 
       <div className="admin-register__container">
-        {/* Logo */}
-        <div className="admin-register__logo">
-          <img src="/jpc-logo.jpg" alt="John Paul College" className="admin-register__logo-img" />
-          <h1 className="admin-register__logo-text">VoteX</h1>
-        </div>
+
 
         {/* Register Card */}
         <div className="admin-register__card">
-          <div className="admin-register__card-header">
-            <div className="admin-register__shield-icon">
-              <HiOutlineShieldCheck />
-            </div>
-            <h2 className="admin-register__title">Admin Registration</h2>
-            <p className="admin-register__desc">
-              Enter your details and the administrative setup key. A Super Admin must approve your request before you can log in.
-            </p>
+          {/* Logo Moved Inside Card */}
+          <div className="admin-register__logo" style={{ marginBottom: 'var(--space-6)' }}>
+            <img src="/jpc-logo.jpg" alt="John Paul College" className="admin-register__logo-img" />
+            <h1 className="admin-register__logo-text" style={{ color: 'var(--slate-900)', marginBottom: '0' }}>VoteX</h1>
+            <p className="admin-register__logo-tagline" style={{ color: 'var(--slate-500)', marginTop: '4px', textAlign: 'center', fontSize: 'var(--font-size-sm)' }}>Admin Registration</p>
           </div>
 
           {/* Messages */}

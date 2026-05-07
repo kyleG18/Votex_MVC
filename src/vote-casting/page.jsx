@@ -101,17 +101,35 @@ function VoteCastingPage() {
             </p>
           </div>
 
-          {/* Position Steps */}
-          <div className="vote-casting__steps">
-            {positions.map((pos, idx) => (
-              <button
-                key={pos}
-                className={`vote-casting__step ${idx === currentPositionIndex ? 'vote-casting__step--active' : ''} ${selections[pos] ? 'vote-casting__step--done' : ''}`}
-                onClick={() => setCurrentPositionIndex(idx)}
-              >
-                {idx + 1}
-              </button>
-            ))}
+          {/* Stepper Pagination */}
+          <div className="vote-casting__stepper">
+            {positions.map((pos, idx) => {
+              const isPast = idx < currentPositionIndex;
+              const isActive = idx === currentPositionIndex;
+              const isCompleted = selections[pos] !== undefined;
+              
+              // Using short names for labels to fit them all
+              const shortLabel = pos.includes('Grade') ? pos.replace('Grade ', 'G') : pos.split(' ')[0];
+
+              return (
+                <div 
+                  key={pos} 
+                  className={`vote-casting__stepper-item ${isActive ? 'active' : ''} ${isPast || isCompleted ? 'completed' : ''}`}
+                  onClick={() => setCurrentPositionIndex(idx)}
+                >
+                  <div className="vote-casting__stepper-label">{shortLabel}</div>
+                  <div className="vote-casting__stepper-circle-wrapper">
+                    <div className="vote-casting__stepper-circle">
+                      {(isPast || isCompleted) && !isActive ? '✓' : idx + 1}
+                    </div>
+                    {/* The connecting line to the next item */}
+                    {idx < positions.length - 1 && (
+                      <div className={`vote-casting__stepper-line ${(isPast || isCompleted) ? 'active-line' : ''}`} />
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -147,13 +165,22 @@ function VoteCastingPage() {
             </button>
 
             {isLastPosition ? (
-              <button
-                className="vote-casting__btn vote-casting__btn--submit"
-                onClick={handleSubmitVote}
-                id="review-submit-btn"
-              >
-                Review & Submit Vote
-              </button>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 'var(--space-1)' }}>
+                <button
+                  className="vote-casting__btn vote-casting__btn--submit"
+                  onClick={handleSubmitVote}
+                  id="review-submit-btn"
+                  disabled={!allSelected}
+                  style={!allSelected ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                >
+                  Review & Submit Vote
+                </button>
+                {!allSelected && (
+                  <span style={{ fontSize: '12px', color: 'var(--danger-500)', fontWeight: '500' }}>
+                    *You must cast a vote for all positions before submitting.
+                  </span>
+                )}
+              </div>
             ) : (
               <button
                 className="vote-casting__btn vote-casting__btn--primary"

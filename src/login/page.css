@@ -312,3 +312,19 @@
 .login-page__admin-btn:hover {
   color: var(--primary-800);
 }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .login-page {
+    padding: var(--space-4);
+  }
+  .login-page__card {
+    padding: var(--space-6) var(--space-4);
+  }
+  .login-page__actions {
+    flex-direction: column;
+  }
+  .login-page__btn {
+    width: 100%;
+  }
+}

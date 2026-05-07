@@ -5,34 +5,23 @@ import './page.css';
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [studentId, setStudentId] = useState('');
-  const [studentIdError, setStudentIdError] = useState('');
-  const [email, setEmail] = useState('');
   const [scanStatus, setScanStatus] = useState('idle'); // idle, scanning, success, error
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleStudentIdChange = (e) => {
-    const value = e.target.value;
-    // Only allow digits
-    const digitsOnly = value.replace(/\D/g, '');
-    setStudentId(digitsOnly);
-
-    if (digitsOnly.length === 0) {
-      setStudentIdError('');
-    } else if (digitsOnly.length < 7) {
-      setStudentIdError(`Student ID must be 7 digits (${digitsOnly.length}/7)`);
-    } else if (digitsOnly.length > 7) {
-      setStudentIdError('Student ID must be exactly 7 digits');
-    } else {
-      setStudentIdError('');
-    }
-  };
-
-  const handleScan = () => {
+  const handleSimulateScan = () => {
+    if (scanStatus === 'scanning') return;
+    
+    setErrorMsg('');
     setScanStatus('scanning');
-    // Simulate fingerprint scan
+    
+    // Simulate the hardware reading the card
     setTimeout(() => {
       setScanStatus('success');
+      
+      // Auto-navigate to voting after success
+      setTimeout(() => {
+        navigate('/vote-casting');
+      }, 1000);
     }, 2000);
   };
 
@@ -40,25 +29,9 @@ function LoginPage() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setErrorMsg('');
-
-    if (!studentId || !email) {
-      setErrorMsg('Please fill in all fields.');
-      return;
-    }
-
-    if (studentId.length !== 7) {
-      setStudentIdError('Student ID must be exactly 7 digits');
-      return;
-    }
-
     if (scanStatus !== 'success') {
-      setErrorMsg('Please complete biometric verification.');
-      return;
+      setErrorMsg('Please tap your ID card on the scanner to log in.');
     }
-
-    // Success - navigate to vote casting
-    navigate('/vote-casting');
   };
 
   const handleAdminLogin = () => {
@@ -75,17 +48,18 @@ function LoginPage() {
       </div>
 
       <div className="login-page__container">
-        {/* Logo */}
-        <div className="login-page__logo">
-          <img src="/jpc-logo.jpg" alt="John Paul College" className="login-page__logo-img" />
-          <h1 className="login-page__logo-text">VoteX</h1>
-          <p className="login-page__logo-tagline">John Paul College · Smart Campus Voting</p>
-        </div>
+
 
         {/* Login Card */}
         <div className="login-page__card">
-          <h2 className="login-page__title">Voter Log In</h2>
-          <p className="login-page__desc">Authenticate to cast your vote for the Student Council Election 2026</p>
+          {/* Logo Moved Inside Card */}
+          <div className="login-page__logo" style={{ marginBottom: 'var(--space-6)' }}>
+            <img src="/jpc-logo.jpg" alt="John Paul College" className="login-page__logo-img" />
+            <h1 className="login-page__logo-text">VoteX</h1>
+            <p className="login-page__logo-tagline">John Paul College · Smart Campus Voting</p>
+          </div>
+          
+
 
           {/* Error Message */}
           {errorMsg && (
@@ -95,65 +69,34 @@ function LoginPage() {
           )}
 
           <form className="login-page__form" onSubmit={handleLogin}>
-            {/* Student ID */}
-            <div className="login-page__field">
-              <label className="login-page__label" htmlFor="studentId">
-                <HiOutlineIdentification /> Student ID Number
+            {/* RFID Scanner Area (Simulation) */}
+            <div className="login-page__field login-page__field--rfid-only">
+              <label className="login-page__label" style={{ textAlign: 'center', width: '100%', marginBottom: 'var(--space-2)' }}>
+                Student ID Scanner
               </label>
-              <input
-                type="text"
-                id="studentId"
-                className={`login-page__input ${studentIdError ? 'login-page__input--error' : ''}`}
-                placeholder="e.g., 2500123"
-                value={studentId}
-                onChange={handleStudentIdChange}
-                maxLength={7}
-                inputMode="numeric"
-              />
-              {studentIdError && (
-                <span className="login-page__field-error">{studentIdError}</span>
-              )}
-            </div>
-
-            {/* Email */}
-            <div className="login-page__field">
-              <label className="login-page__label" htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                className="login-page__input"
-                placeholder="student@jpc.edu.ph"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-
-            {/* Fingerprint Scanner */}
-            <div className="login-page__field">
-              <label className="login-page__label">
-                <HiOutlineFingerPrint /> Biometrics Scan (Fingerprint)
-              </label>
+              <p className="login-page__hint" style={{ textAlign: 'center', marginBottom: 'var(--space-4)', fontSize: 'var(--font-size-sm)', color: 'var(--slate-500)' }}>
+                Hardware required. (Click box to simulate scan)
+              </p>
+              
               <div
                 className={`login-page__scanner ${scanStatus !== 'idle' ? `login-page__scanner--${scanStatus}` : ''}`}
-                onClick={handleScan}
-                id="fingerprint-scanner"
+                onClick={handleSimulateScan}
+                id="rfid-scanner"
+                style={{ padding: 'var(--space-8) var(--space-4)' }}
               >
-                <HiOutlineFingerPrint className="login-page__scanner-icon" />
-                <span className="login-page__scanner-text">
-                  {scanStatus === 'idle' && 'Tap to scan fingerprint'}
-                  {scanStatus === 'scanning' && 'Scanning...'}
-                  {scanStatus === 'success' && 'Fingerprint verified ✓'}
-                  {scanStatus === 'error' && 'Scan failed. Try again.'}
+                <HiOutlineIdentification className="login-page__scanner-icon" style={{ fontSize: '4rem' }} />
+                <span className="login-page__scanner-text" style={{ marginTop: 'var(--space-2)', fontSize: '1.1rem' }}>
+                  {scanStatus === 'idle' && 'Tap ID Card to Scan'}
+                  {scanStatus === 'scanning' && 'Reading Card Data...'}
+                  {scanStatus === 'success' && 'Card Verified ✓'}
+                  {scanStatus === 'error' && 'Unrecognized Card'}
                 </span>
               </div>
             </div>
 
             {/* Buttons */}
-            <div className="login-page__actions">
-              <Link to="/register" className="login-page__btn login-page__btn--secondary" id="register-btn">
-                Register
-              </Link>
-              <button type="submit" className="login-page__btn login-page__btn--primary" id="login-btn">
+            <div className="login-page__actions" style={{ marginTop: 'var(--space-2)' }}>
+              <button type="submit" className="login-page__btn login-page__btn--primary" id="login-btn" style={{ width: '100%' }}>
                 Log In
               </button>
             </div>

@@ -53,15 +53,16 @@ function RegisterPage() {
       </div>
 
       <div className="register-page__container">
-        {/* Logo */}
-        <div className="register-page__logo">
-          <img src="/jpc-logo.jpg" alt="John Paul College" className="register-page__logo-img" />
-        </div>
+
 
         {/* Register Card */}
         <div className="register-page__card">
-          <h2 className="register-page__title">Register</h2>
-          <p className="register-page__desc">Create your account to participate in voting</p>
+          {/* Logo Moved Inside Card */}
+          <div className="register-page__logo" style={{ marginBottom: 'var(--space-6)', display: 'flex', justifyContent: 'center' }}>
+            <img src="/jpc-logo.jpg" alt="John Paul College" className="register-page__logo-img" />
+          </div>
+          
+
 
           <form className="register-page__form" onSubmit={handleSubmit}>
             {/* Name */}

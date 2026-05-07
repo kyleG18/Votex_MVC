@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { HiOutlineShieldCheck, HiOutlineLockClosed, HiOutlineUser } from 'react-icons/hi2';
 import './page.css';
 
@@ -10,7 +11,7 @@ function AdminLoginPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
@@ -19,47 +20,24 @@ function AdminLoginPage() {
       return;
     }
 
-    setIsLoading(true);
-
-    // Simulate authentication delay
-    setTimeout(() => {
-      // Retrieve newly registered credentials from localStorage
-      const storedAdminData = localStorage.getItem('votex_new_admin');
-      let storedAdmin = null;
-      if (storedAdminData) {
-        try {
-          storedAdmin = JSON.parse(storedAdminData);
-        } catch (e) {
-          console.error("Error parsing stored admin", e);
-        }
-      }
-
-      // Check against default super admin credentials
-      if (username === 'admin' && password === 'admin123') {
-        // Set role to superadmin for the session
-        localStorage.setItem('votex_session_role', 'superadmin');
-        navigate('/admin/dashboard');
-        return;
-      }
+    try {
+      const response = await axios.post('http://localhost:5000/api/admins/login', { username, password });
       
-      // Check against newly registered account
-      if (storedAdmin && username === storedAdmin.username && password === storedAdmin.password) {
-        if (storedAdmin.status === 'pending') {
-          setErrorMsg('Your account is pending approval from a Super Admin.');
-          setIsLoading(false);
-          return;
-        } else if (storedAdmin.status === 'approved') {
-          // Normal admin login success
-          localStorage.setItem('votex_session_role', 'admin');
-          navigate('/admin/dashboard');
-          return;
-        }
+      if (response.data.success) {
+        // Save session data (in a real app, use HTTP-only cookies or JWT tokens)
+        localStorage.setItem('votex_session_role', response.data.user.role);
+        localStorage.setItem('votex_admin_id', response.data.user.id);
+        navigate('/admin/dashboard');
       }
-
-      // If we reach here, it's an invalid login
-      setErrorMsg('Invalid username or password.');
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setErrorMsg(error.response.data.message);
+      } else {
+        setErrorMsg('Failed to connect to the server.');
+      }
+    } finally {
       setIsLoading(false);
-    }, 1200);
+    }
   };
 
   return (
@@ -72,24 +50,18 @@ function AdminLoginPage() {
       </div>
 
       <div className="admin-login__container">
-        {/* Logo */}
-        <div className="admin-login__logo">
-          <img src="/jpc-logo.jpg" alt="John Paul College" className="admin-login__logo-img" />
-          <h1 className="admin-login__logo-text">VoteX</h1>
-          <p className="admin-login__logo-tagline">Election Committee Portal</p>
-        </div>
+
 
         {/* Login Card */}
         <div className="admin-login__card">
-          <div className="admin-login__card-header">
-            <div className="admin-login__shield-icon">
-              <HiOutlineShieldCheck />
-            </div>
-            <h2 className="admin-login__title">Admin Log In</h2>
-            <p className="admin-login__desc">
-              Authorized access only. Enter your administrator credentials.
-            </p>
+          {/* Logo Moved Inside Card */}
+          <div className="admin-login__logo" style={{ marginBottom: 'var(--space-6)' }}>
+            <img src="/jpc-logo.jpg" alt="John Paul College" className="admin-login__logo-img" />
+            <h1 className="admin-login__logo-text" style={{ color: 'var(--slate-900)' }}>VoteX</h1>
+            <p className="admin-login__logo-tagline" style={{ color: 'var(--slate-500)' }}>Election Committee Portal</p>
           </div>
+
+
 
           {/* Error Message */}
           {errorMsg && (

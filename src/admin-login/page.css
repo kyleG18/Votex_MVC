@@ -267,3 +267,13 @@
   color: var(--slate-300);
   font-size: var(--font-size-xs);
 }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .admin-login {
+    padding: var(--space-4);
+  }
+  .admin-login__card {
+    padding: var(--space-6) var(--space-4);
+  }
+}

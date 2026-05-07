@@ -18,13 +18,10 @@
   animation: fadeIn 0.4s ease-out;
 }
 
-/* Header */
 .vote-casting__header {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: column;
   gap: var(--space-4);
-  flex-wrap: wrap;
 }
 
 .vote-casting__title {
@@ -43,44 +40,103 @@
   color: var(--slate-500);
 }
 
-/* Position Steps */
-.vote-casting__steps {
+/* Stepper Pagination */
+.vote-casting__stepper {
   display: flex;
-  gap: var(--space-2);
+  justify-content: space-between;
+  width: 100%;
+  margin-top: var(--space-4);
+  position: relative;
+  overflow-x: auto; /* Allow scrolling if too many items on small screens */
+  padding-bottom: var(--space-2);
 }
 
-.vote-casting__step {
-  width: 36px;
-  height: 36px;
+.vote-casting__stepper::-webkit-scrollbar {
+  height: 4px;
+}
+
+.vote-casting__stepper::-webkit-scrollbar-thumb {
+  background: var(--slate-200);
   border-radius: var(--radius-full);
+}
+
+.vote-casting__stepper-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  cursor: pointer;
+  min-width: 40px; /* Ensure they don't squish too much */
+}
+
+.vote-casting__stepper-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--slate-500);
+  margin-bottom: 6px;
+  text-align: center;
+  transition: color 0.3s;
+  white-space: nowrap;
+}
+
+.vote-casting__stepper-item.active .vote-casting__stepper-label,
+.vote-casting__stepper-item.completed .vote-casting__stepper-label {
+  color: #db2777; /* Matching the pink from the screenshot */
+}
+
+.vote-casting__stepper-item.active .vote-casting__stepper-label {
+  font-weight: 800;
+}
+
+.vote-casting__stepper-circle-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.vote-casting__stepper-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   border: 2px solid var(--slate-300);
   background: var(--bg-surface);
   color: var(--slate-500);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  z-index: 2;
+  transition: all 0.3s;
 }
 
-.vote-casting__step:hover {
-  border-color: var(--primary-400);
-  color: var(--primary-600);
+.vote-casting__stepper-item.completed .vote-casting__stepper-circle {
+  background: #db2777;
+  border-color: #db2777;
+  color: white;
 }
 
-.vote-casting__step--active {
-  background: var(--primary-600);
-  border-color: var(--primary-600);
-  color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+.vote-casting__stepper-item.active .vote-casting__stepper-circle {
+  border-color: #db2777;
+  color: #db2777;
+  background: var(--bg-surface);
 }
 
-.vote-casting__step--done {
-  background: var(--success-500);
-  border-color: var(--success-500);
-  color: #ffffff;
+.vote-casting__stepper-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--slate-300);
+  z-index: 1;
+  transform: translateY(-50%);
+  transition: background 0.3s;
+}
+
+.vote-casting__stepper-line.active-line {
+  background: #db2777;
 }
 
 /* Candidates */
@@ -246,6 +302,47 @@
   }
 
   .vote-casting__sidebar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .vote-casting__stepper-label {
+    display: none; /* Hide labels to avoid overlap on small screens */
+  }
+  
+  .vote-casting__stepper-item {
+    min-width: 30px;
+  }
+  
+  .vote-casting__stepper-circle {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+  
+  .vote-casting__nav {
+    flex-direction: column-reverse;
+    gap: var(--space-4);
+  }
+  
+  .vote-casting__nav-arrows {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .vote-casting__btn--logout {
+    width: 100%;
+    justify-content: center;
+    background: var(--slate-100);
+    padding: var(--space-3);
+  }
+  
+  .vote-casting__modal-actions {
+    flex-direction: column;
+  }
+  
+  .vote-casting__modal-actions button {
     width: 100%;
   }
 }
