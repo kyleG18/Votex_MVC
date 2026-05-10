@@ -11,7 +11,28 @@
 .manage-students__header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.manage-students__add-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+  color: white;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-fast);
+}
+
+.manage-students__add-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+  background: var(--primary-700);
 }
 
 .manage-students__title {
@@ -188,3 +209,599 @@
   color: var(--slate-400);
   font-size: var(--font-size-sm);
 }
+
+.manage-students__delete-btn {
+  background: transparent;
+  color: var(--slate-400);
+  font-size: 1.1rem;
+  transition: all var(--transition-fast);
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+}
+
+.manage-students__delete-btn:hover {
+  color: var(--danger-500);
+  background: var(--danger-50);
+}
+
+/* Modal */
+.manage-students__modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.manage-students__modal {
+  background: var(--bg-surface);
+  width: 90%;
+  max-width: 600px;
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-2xl);
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.manage-students__modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+
+.manage-students__modal-header h2 {
+  font-size: var(--font-size-xl);
+  color: var(--slate-900);
+  font-weight: 700;
+}
+
+.manage-students__modal-close {
+  background: var(--slate-100);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--slate-500);
+  transition: all 0.2s;
+}
+
+.manage-students__modal-close:hover {
+  background: var(--slate-200);
+  color: var(--slate-900);
+}
+
+/* Form */
+.manage-students__form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.manage-students__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.manage-students__form-group label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--slate-600);
+}
+
+.manage-students__form-group input,
+.manage-students__form-group select {
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+}
+
+.manage-students__form-group input:focus {
+  border-color: var(--primary-500);
+  outline: none;
+}
+
+/* Profile Photo Upload */
+.manage-students__photo-upload {
+  margin-bottom: var(--space-5);
+}
+
+.manage-students__photo-label {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--slate-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-3);
+}
+
+.manage-students__photo-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.manage-students__photo-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--slate-100);
+  border: 2px dashed var(--slate-300);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.manage-students__photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.manage-students__photo-placeholder {
+  font-size: 10px;
+  color: var(--slate-400);
+  text-align: center;
+}
+
+.manage-students__photo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.manage-students__photo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--primary-50);
+  color: var(--primary-700);
+  border: 1.5px solid var(--primary-200);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.manage-students__photo-btn:hover {
+  background: var(--primary-100);
+  border-color: var(--primary-400);
+}
+
+.manage-students__photo-hint {
+  font-size: 11px;
+  color: var(--slate-400);
+}
+
+/* RFID Registration Field */
+.manage-students__rfid-field {
+  background: var(--slate-50);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  border: 2px dashed var(--slate-200);
+  margin-bottom: var(--space-6);
+  transition: all 0.3s;
+}
+
+.manage-students__rfid-field--success {
+  background: var(--success-50);
+  border-color: var(--success-400);
+  border-style: solid;
+}
+
+.manage-students__rfid-field label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--slate-800);
+  margin-bottom: var(--space-3);
+}
+
+.manage-students__rfid-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.manage-students__rfid-input-wrapper .icon {
+  position: absolute;
+  left: var(--space-3);
+  font-size: 1.5rem;
+  color: var(--slate-400);
+}
+
+.manage-students__rfid-input-wrapper input {
+  width: 100%;
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-12);
+  border: 2px solid var(--slate-300);
+  border-radius: var(--radius-lg);
+  font-family: monospace;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  background: white;
+}
+
+.manage-students__rfid-input-wrapper .success-icon {
+  position: absolute;
+  right: var(--space-3);
+  font-size: 1.5rem;
+  color: var(--success-500);
+  animation: scaleIn 0.3s ease-out;
+}
+
+.manage-students__rfid-field .hint {
+  font-size: var(--font-size-xs);
+  color: var(--slate-500);
+  margin-top: var(--space-2);
+}
+
+/* Modal Actions */
+.manage-students__modal-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}
+
+.manage-students__modal-actions button {
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.btn-cancel {
+  background: var(--slate-100);
+  color: var(--slate-600);
+}
+
+.btn-submit {
+  background: var(--primary-600);
+  color: white;
+  flex: 1;
+}
+
+/* Alert */
+.manage-students__alert {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.manage-students__alert--success {
+  background: var(--success-100);
+  color: #065f46;
+}
+
+.manage-students__alert--error {
+  background: var(--danger-100);
+  color: #991b1b;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ─── Clickable Table Row ─── */
+.manage-students__row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.manage-students__row:hover {
+  background: var(--primary-50) !important;
+}
+
+/* Row profile photo */
+.manage-students__row-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-200);
+}
+
+.manage-students__row-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Edit Drawer ─── */
+.ms-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.ms-drawer {
+  width: 100%;
+  max-width: 440px;
+  height: 100%;
+  background: var(--bg-surface);
+  box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+  overflow-y: auto;
+  padding: var(--space-8) var(--space-6);
+  animation: drawerSlideIn 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+@keyframes drawerSlideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+.ms-drawer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+
+.ms-drawer__header h2 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.ms-drawer__close {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--slate-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--slate-500);
+  transition: all 0.2s;
+}
+
+.ms-drawer__close:hover {
+  background: var(--slate-200);
+  color: var(--slate-900);
+}
+
+/* Profile section in drawer */
+.ms-drawer__profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.ms-drawer__profile-img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--primary-200);
+  box-shadow: 0 4px 20px rgba(99,102,241,0.2);
+}
+
+.ms-drawer__profile-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  color: white;
+  font-size: 2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(99,102,241,0.2);
+}
+
+.ms-drawer__change-photo {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--primary-600);
+  cursor: pointer;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--primary-200);
+  background: var(--primary-50);
+  transition: all 0.2s;
+}
+
+.ms-drawer__change-photo:hover {
+  background: var(--primary-100);
+}
+
+/* Form grid in drawer */
+.ms-drawer__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.ms-drawer__form .manage-students__form-group input,
+.ms-drawer__form .manage-students__form-group select {
+  width: 100%;
+}
+
+/* Read-only info strip */
+.ms-drawer__readonly {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--slate-50);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-5);
+  font-size: var(--font-size-sm);
+  color: var(--slate-600);
+}
+
+.ms-drawer__readonly strong {
+  color: var(--slate-800);
+}
+
+/* Drawer action buttons */
+.ms-drawer__actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.ms-drawer__save-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+  color: white;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+}
+
+.ms-drawer__save-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.ms-drawer__delete-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: white;
+  color: var(--danger-600);
+  border: 1.5px solid var(--danger-200);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  transition: all 0.2s;
+}
+
+.ms-drawer__delete-btn:hover {
+  background: var(--danger-50);
+  border-color: var(--danger-400);
+}
+
+/* ─── Custom Delete Confirm Modal ─── */
+.ms-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.ms-confirm {
+  background: var(--bg-surface);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: var(--shadow-2xl);
+  animation: scaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ms-confirm__icon {
+  font-size: 3rem;
+  color: var(--danger-500);
+  margin-bottom: var(--space-4);
+  display: flex;
+  justify-content: center;
+}
+
+.ms-confirm__title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--slate-900);
+  margin-bottom: var(--space-2);
+}
+
+.ms-confirm__msg {
+  font-size: var(--font-size-sm);
+  color: var(--slate-500);
+  margin-bottom: var(--space-6);
+  line-height: 1.6;
+}
+
+.ms-confirm__msg strong {
+  color: var(--slate-800);
+}
+
+.ms-confirm__actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.ms-confirm__cancel {
+  flex: 1;
+  padding: var(--space-3);
+  background: var(--slate-100);
+  color: var(--slate-700);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ms-confirm__cancel:hover { background: var(--slate-200); }
+
+.ms-confirm__delete {
+  flex: 1;
+  padding: var(--space-3);
+  background: #dc2626;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ms-confirm__delete:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+

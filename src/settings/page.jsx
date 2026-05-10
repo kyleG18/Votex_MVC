@@ -1,25 +1,60 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { HiOutlineCog6Tooth, HiOutlineCalendarDays, HiOutlineShieldCheck, HiOutlineBellAlert } from 'react-icons/hi2';
-import data from '../../data.json';
+import axios from 'axios';
 import './page.css';
 
 function SettingsPage() {
-  const { electionInfo } = data;
-
   const [settings, setSettings] = useState({
-    electionTitle: electionInfo.title,
-    startDate: electionInfo.startDate,
-    endDate: electionInfo.endDate,
+    electionTitle: '',
+    startDate: '',
+    endDate: '',
     allowMultipleVotes: false,
-    requireBiometrics: true,
     showLiveResults: true,
     enableNotifications: true,
     maxCandidatesPerPosition: 5,
     votingTimeStart: '08:00',
     votingTimeEnd: '17:00',
+    adminAuthKey: 'JPC-ADMIN-2026',
   });
 
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // Helper to format date strings to YYYY-MM-DD for input type="date"
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/settings');
+        if (response.data.success && response.data.settings) {
+          const s = response.data.settings;
+          setSettings({
+            electionTitle: s.election_title || '',
+            startDate: formatDateForInput(s.start_date),
+            endDate: formatDateForInput(s.end_date),
+            allowMultipleVotes: !!s.allow_multiple_votes,
+            showLiveResults: !!s.show_live_results,
+            enableNotifications: !!s.enable_notifications,
+            maxCandidatesPerPosition: s.max_candidates_per_position || 5,
+            votingTimeStart: s.voting_time_start || '08:00',
+            votingTimeEnd: s.voting_time_end || '17:00',
+            adminAuthKey: s.admin_auth_key || 'JPC-ADMIN-2026',
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching settings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -30,11 +65,30 @@ function SettingsPage() {
     setSaved(false);
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    setSaved(false);
+    
+    try {
+      const response = await axios.put('http://localhost:5000/api/settings', settings);
+      if (response.data.success) {
+        setSaved(true);
+        // Scroll to top to see the toast
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => setSaved(false), 4000);
+      }
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      alert('Failed to save settings. Please verify the backend is running.');
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return <div className="settings" style={{ padding: '2rem', textAlign: 'center' }}>Loading settings...</div>;
+  }
 
   return (
     <div className="settings" id="settings-page">
@@ -73,6 +127,7 @@ function SettingsPage() {
                 name="electionTitle"
                 value={settings.electionTitle}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="settings__field">
@@ -83,6 +138,7 @@ function SettingsPage() {
                 name="startDate"
                 value={settings.startDate}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="settings__field">
@@ -93,6 +149,7 @@ function SettingsPage() {
                 name="endDate"
                 value={settings.endDate}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="settings__field">
@@ -103,6 +160,7 @@ function SettingsPage() {
                 name="votingTimeStart"
                 value={settings.votingTimeStart}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="settings__field">
@@ -113,6 +171,7 @@ function SettingsPage() {
                 name="votingTimeEnd"
                 value={settings.votingTimeEnd}
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -131,22 +190,6 @@ function SettingsPage() {
           <div className="settings__toggles">
             <div className="settings__toggle">
               <div className="settings__toggle-info">
-                <span className="settings__toggle-label">Require Biometric Verification</span>
-                <span className="settings__toggle-desc">Students must scan fingerprint before voting</span>
-              </div>
-              <label className="settings__switch">
-                <input
-                  type="checkbox"
-                  name="requireBiometrics"
-                  checked={settings.requireBiometrics}
-                  onChange={handleChange}
-                />
-                <span className="settings__switch-slider" />
-              </label>
-            </div>
-
-            <div className="settings__toggle">
-              <div className="settings__toggle-info">
                 <span className="settings__toggle-label">Allow Re-voting</span>
                 <span className="settings__toggle-desc">Allow students to change their vote (not recommended)</span>
               </div>
@@ -159,6 +202,22 @@ function SettingsPage() {
                 />
                 <span className="settings__switch-slider" />
               </label>
+            </div>
+
+            <div className="settings__field settings__field--full" style={{ marginTop: 'var(--space-6)' }}>
+              <label htmlFor="adminAuthKey">Authorization Setup Key</label>
+              <p className="settings__field-desc" style={{ marginBottom: 'var(--space-2)', fontSize: '0.75rem', color: 'var(--slate-500)' }}>
+                This secret key is required for new administrators to register. Keep it secure.
+              </p>
+              <input
+                type="text"
+                id="adminAuthKey"
+                name="adminAuthKey"
+                value={settings.adminAuthKey}
+                onChange={handleChange}
+                placeholder="Enter secret key for admin registration"
+                style={{ fontFamily: 'monospace', letterSpacing: '0.1em' }}
+              />
             </div>
           </div>
         </div>
@@ -225,8 +284,19 @@ function SettingsPage() {
 
         {/* Save Button */}
         <div className="settings__actions">
-          <button type="submit" className="settings__save-btn" id="save-settings-btn">
-            <HiOutlineCog6Tooth /> Save Settings
+          <button 
+            type="submit" 
+            className={`settings__save-btn ${saving ? 'settings__save-btn--loading' : ''}`} 
+            id="save-settings-btn"
+            disabled={saving}
+          >
+            {saving ? (
+              <>Saving Settings...</>
+            ) : (
+              <>
+                <HiOutlineCog6Tooth /> Save Settings
+              </>
+            )}
           </button>
         </div>
       </form>

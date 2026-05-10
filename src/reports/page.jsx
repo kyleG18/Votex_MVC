@@ -1,21 +1,57 @@
-import { HiOutlineDocumentArrowDown, HiOutlinePrinter } from 'react-icons/hi2';
+import { useState, useEffect } from 'react';
+import { HiOutlineDocumentArrowDown } from 'react-icons/hi2';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
-import data from '../../data.json';
+import axios from 'axios';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import './page.css';
 
 const COLORS = ['#4f46e5', '#7c3aed', '#6366f1', '#818cf8', '#a78bfa'];
 
 function ReportsPage() {
-  const { candidates, positions, electionInfo } = data;
+  const [stats, setStats] = useState({
+    totalRegisteredVoters: 0,
+    totalVotesCast: 0,
+    settings: null
+  });
+  
+  const [tallyData, setTallyData] = useState({
+    candidates: [],
+    positions: []
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, tallyRes] = await Promise.all([
+          axios.get('http://localhost:5000/api/dashboard/stats'),
+          axios.get('http://localhost:5000/api/dashboard/tally')
+        ]);
+        
+        if (statsRes.data.success) {
+          setStats(statsRes.data.stats);
+        }
+        if (tallyRes.data.success) {
+          setTallyData({
+            candidates: tallyRes.data.candidates,
+            positions: tallyRes.data.positions
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   // Get winners per position
-  const results = positions.map(position => {
-    const positionCandidates = candidates.filter(c => c.position === position);
+  const results = tallyData.positions.map(position => {
+    const positionCandidates = tallyData.candidates.filter(c => c.position === position);
     const sorted = [...positionCandidates].sort((a, b) => b.votes - a.votes);
     const totalVotes = positionCandidates.reduce((sum, c) => sum + c.votes, 0);
     return {
       position,
-      winner: sorted[0],
+      winner: sorted[0] || { name: 'None', votes: 0 },
       candidates: sorted,
       totalVotes,
     };
@@ -23,9 +59,85 @@ function ReportsPage() {
 
   // Turnout data for pie chart
   const turnoutData = [
-    { name: 'Voted', value: electionInfo.totalVotesCast },
-    { name: 'Not Voted', value: electionInfo.totalRegisteredVoters - electionInfo.totalVotesCast },
+    { name: 'Voted', value: stats.totalVotesCast },
+    { name: 'Not Voted', value: Math.max(0, stats.totalRegisteredVoters - stats.totalVotesCast) },
   ];
+
+  const turnoutPercentage = stats.totalRegisteredVoters > 0 
+    ? ((stats.totalVotesCast / stats.totalRegisteredVoters) * 100).toFixed(1) 
+    : 0;
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    const title = stats.settings?.election_title || 'Election Report';
+    
+    // Add Header
+    doc.setFontSize(22);
+    doc.setTextColor(79, 70, 229); // Primary color
+    doc.text(title, 14, 20);
+    
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+    
+    // Add Stats Summary
+    doc.setFontSize(14);
+    doc.setTextColor(0);
+    doc.text('Election Summary', 14, 40);
+    
+    autoTable(doc, {
+      startY: 45,
+      head: [['Metric', 'Value']],
+      body: [
+        ['Total Registered Voters', stats.totalRegisteredVoters.toLocaleString()],
+        ['Total Votes Cast', stats.totalVotesCast.toLocaleString()],
+        ['Voter Turnout', `${turnoutPercentage}%`],
+        ['Total Positions', tallyData.positions.length.toString()],
+        ['Total Candidates', tallyData.candidates.length.toString()]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [79, 70, 229] },
+    });
+    
+    // Add Results per Position
+    let currentY = doc.lastAutoTable.finalY + 15;
+    
+    doc.setFontSize(14);
+    doc.text('Detailed Results by Position', 14, currentY);
+    currentY += 5;
+    
+    results.forEach((res, index) => {
+      // Check if we need a new page
+      if (currentY > 250) {
+        doc.addPage();
+        currentY = 20;
+      }
+      
+      doc.setFontSize(12);
+      doc.setTextColor(79, 70, 229);
+      doc.text(res.position, 14, currentY + 5);
+      
+      const tableData = res.candidates.map(c => [
+        c.name,
+        c.party || c.partylist || 'Independent',
+        c.votes.toString(),
+        res.totalVotes > 0 ? `${((c.votes / res.totalVotes) * 100).toFixed(1)}%` : '0%'
+      ]);
+      
+      autoTable(doc, {
+        startY: currentY + 8,
+        head: [['Candidate', 'Party', 'Votes', 'Percentage']],
+        body: tableData,
+        theme: 'striped',
+        headStyles: { fillColor: [100, 116, 139] },
+      });
+      
+      currentY = doc.lastAutoTable.finalY + 10;
+    });
+    
+    // Save the PDF
+    doc.save(`${title.replace(/\s+/g, '_')}_Report.pdf`);
+  };
 
   return (
     <div className="reports" id="reports-page">
@@ -33,13 +145,10 @@ function ReportsPage() {
       <div className="reports__header">
         <div>
           <h1 className="reports__title">Election Reports</h1>
-          <p className="reports__subtitle">{electionInfo.title}</p>
+          <p className="reports__subtitle">{stats.settings?.election_title || 'Election Title'}</p>
         </div>
         <div className="reports__actions">
-          <button className="reports__btn" id="print-report-btn">
-            <HiOutlinePrinter /> Print
-          </button>
-          <button className="reports__btn reports__btn--primary" id="export-report-btn">
+          <button className="reports__btn reports__btn--primary" id="export-report-btn" onClick={handleExportPDF}>
             <HiOutlineDocumentArrowDown /> Export PDF
           </button>
         </div>
@@ -67,7 +176,7 @@ function ReportsPage() {
           </ResponsiveContainer>
           <div className="reports__summary-center">
             <span className="reports__summary-pct">
-              {((electionInfo.totalVotesCast / electionInfo.totalRegisteredVoters) * 100).toFixed(1)}%
+              {turnoutPercentage}%
             </span>
             <span className="reports__summary-label">Turnout</span>
           </div>
@@ -75,19 +184,19 @@ function ReportsPage() {
 
         <div className="reports__summary-stats">
           <div className="reports__summary-stat">
-            <span className="reports__summary-stat-value">{electionInfo.totalRegisteredVoters.toLocaleString()}</span>
+            <span className="reports__summary-stat-value">{stats.totalRegisteredVoters.toLocaleString()}</span>
             <span className="reports__summary-stat-label">Total Registered</span>
           </div>
           <div className="reports__summary-stat">
-            <span className="reports__summary-stat-value">{electionInfo.totalVotesCast.toLocaleString()}</span>
+            <span className="reports__summary-stat-value">{stats.totalVotesCast.toLocaleString()}</span>
             <span className="reports__summary-stat-label">Total Votes Cast</span>
           </div>
           <div className="reports__summary-stat">
-            <span className="reports__summary-stat-value">{positions.length}</span>
+            <span className="reports__summary-stat-value">{tallyData.positions.length}</span>
             <span className="reports__summary-stat-label">Positions</span>
           </div>
           <div className="reports__summary-stat">
-            <span className="reports__summary-stat-value">{candidates.length}</span>
+            <span className="reports__summary-stat-value">{tallyData.candidates.length}</span>
             <span className="reports__summary-stat-label">Total Candidates</span>
           </div>
         </div>
@@ -97,7 +206,7 @@ function ReportsPage() {
       <div className="reports__results">
         <h2 className="reports__section-title">Results by Position</h2>
 
-        {results.map(({ position, winner, candidates: posCandidates, totalVotes }) => (
+        {results.map(({ position, winner, candidates: posCandidates }) => (
           <div key={position} className="reports__position-card">
             <div className="reports__position-header">
               <h3 className="reports__position-name">{position}</h3>

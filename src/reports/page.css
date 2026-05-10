@@ -59,6 +59,9 @@
 }
 
 .reports__btn--primary:hover {
+  background: linear-gradient(135deg, var(--primary-700), var(--primary-800));
+  color: #ffffff;
+  border-color: transparent;
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }

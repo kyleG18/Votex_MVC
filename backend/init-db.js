@@ -39,6 +39,7 @@ async function initializeDatabase() {
         email VARCHAR(150) UNIQUE NOT NULL,
         course VARCHAR(100),
         year_level VARCHAR(20),
+        profile_pic VARCHAR(255),
         has_voted BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -84,6 +85,35 @@ async function initializeDatabase() {
         VALUES ('System Administrator', 'admin', 'admin123', 'superadmin', 'approved')
       `);
       console.log('✅ Default Super Admin account inserted.');
+    }
+
+    // 5. Create Settings Table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS settings (
+        id INT PRIMARY KEY DEFAULT 1,
+        election_title VARCHAR(255) DEFAULT 'Student Council Election 2026',
+        start_date DATE,
+        end_date DATE,
+        voting_time_start TIME DEFAULT '08:00:00',
+        voting_time_end TIME DEFAULT '17:00:00',
+        allow_multiple_votes BOOLEAN DEFAULT FALSE,
+        show_live_results BOOLEAN DEFAULT TRUE,
+        enable_notifications BOOLEAN DEFAULT TRUE,
+        max_candidates_per_position INT DEFAULT 5,
+        admin_auth_key VARCHAR(255) DEFAULT 'JPC-ADMIN-2026'
+      )
+    `);
+    console.log('✅ Settings table created.');
+
+    // Insert default settings if not exists
+    const [settingsRows] = await connection.query('SELECT * FROM settings WHERE id = 1');
+    if (settingsRows.length === 0) {
+      // Use current date for start and end date as defaults
+      await connection.query(`
+        INSERT INTO settings (id, start_date, end_date) 
+        VALUES (1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 7 DAY))
+      `);
+      console.log('✅ Default settings inserted.');
     }
 
     console.log('🎉 Database initialization complete!');

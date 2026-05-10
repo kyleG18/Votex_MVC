@@ -1,22 +1,63 @@
+import { useState, useEffect } from 'react';
 import { HiOutlineUsers, HiOutlineCheckBadge, HiOutlineClock } from 'react-icons/hi2';
+import axios from 'axios';
 import StatCard from '../Component/stat-card/statcard';
 import VoteChart from '../Component/vote-chart/votechart';
-import data from '../../data.json';
 import './page.css';
 
 function DashboardPage() {
-  const { candidates, electionInfo } = data;
+  const [stats, setStats] = useState({
+    totalRegisteredVoters: 0,
+    totalVotesCast: 0,
+    settings: null
+  });
+  const [tallyData, setTallyData] = useState({
+    candidates: [],
+    positions: []
+  });
 
-  // Prepare chart data for Presidential candidates
-  const presidentCandidates = candidates.filter(c => c.position === 'President');
-  const chartData = presidentCandidates.map(c => ({
-    name: c.name,
-    votes: c.votes,
-  }));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, tallyRes] = await Promise.all([
+          axios.get('http://localhost:5000/api/dashboard/stats'),
+          axios.get('http://localhost:5000/api/dashboard/tally')
+        ]);
+        
+        if (statsRes.data.success) {
+          setStats(statsRes.data.stats);
+        }
+        if (tallyRes.data.success) {
+          setTallyData({
+            candidates: tallyRes.data.candidates,
+            positions: tallyRes.data.positions
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
-  // Calculate time remaining (mock)
-  const timeRemaining = '3d : 14h : 22m';
-  const turnout = ((electionInfo.totalVotesCast / electionInfo.totalRegisteredVoters) * 100).toFixed(0);
+  // Calculate time remaining based on settings
+  const calculateTimeRemaining = () => {
+    if (!stats.settings || !stats.settings.end_date) return 'Not Set';
+    const end = new Date(stats.settings.end_date);
+    const now = new Date();
+    const diff = end - now;
+    if (diff <= 0) return 'Ended';
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const mins = Math.floor((diff / 1000 / 60) % 60);
+    return `${days}d : ${hours}h : ${mins}m`;
+  };
+
+  const timeRemaining = calculateTimeRemaining();
+  const turnout = stats.totalRegisteredVoters > 0 
+    ? ((stats.totalVotesCast / stats.totalRegisteredVoters) * 100).toFixed(1) 
+    : 0;
 
   return (
     <div className="dashboard" id="admin-dashboard">
@@ -40,50 +81,45 @@ function DashboardPage() {
         <StatCard
           icon={<HiOutlineUsers />}
           title="Total Registered Voters"
-          value={electionInfo.totalRegisteredVoters.toLocaleString()}
-          subtitle="+2.1% from yesterday"
+          value={stats.totalRegisteredVoters.toLocaleString()}
+          subtitle="Registered in system"
           color="primary"
         />
         <StatCard
           icon={<HiOutlineCheckBadge />}
           title="Current Vote Count"
-          value={electionInfo.totalVotesCast.toLocaleString()}
+          value={stats.totalVotesCast.toLocaleString()}
           subtitle={`${turnout}% Turnout`}
           color="success"
         />
         <StatCard
           icon={<HiOutlineClock />}
-          title="Time Remaining"
-          value={timeRemaining}
-          subtitle="Election ends Apr 28"
-          color="warning"
+          title="Election Status"
+          value={timeRemaining === 'Ended' ? 'Ended' : 'Active'}
+          subtitle={timeRemaining === 'Ended' ? 'Election has concluded' : `Time Remaining: ${timeRemaining}`}
+          color={timeRemaining === 'Ended' ? 'primary' : 'warning'}
         />
       </div>
 
-      {/* Vote Tally Chart */}
-      <VoteChart data={chartData} title="Election Progress — Live Vote Tally (President)" />
+      {/* Vote Tally Charts for ALL positions */}
+      {tallyData.positions.map((position) => {
+        const positionCandidates = tallyData.candidates.filter(c => c.position === position);
+        const chartData = positionCandidates.map(c => ({
+          name: c.name,
+          votes: c.votes,
+        }));
 
-      {/* Recent Activity */}
-      <div className="dashboard__recent">
-        <h3 className="dashboard__section-title">Recent Voting Activity</h3>
-        <div className="dashboard__activity-list">
-          {[
-            { time: '2 min ago', action: 'Vote submitted', station: 'Station 1' },
-            { time: '5 min ago', action: 'Fingerprint verified', station: 'Station 3' },
-            { time: '8 min ago', action: 'Vote submitted', station: 'Station 2' },
-            { time: '12 min ago', action: 'Vote submitted', station: 'Station 1' },
-            { time: '15 min ago', action: 'Fingerprint verified', station: 'Station 4' },
-          ].map((activity, index) => (
-            <div key={index} className="dashboard__activity-item">
-              <div className="dashboard__activity-dot" />
-              <div className="dashboard__activity-content">
-                <span className="dashboard__activity-action">{activity.action}</span>
-                <span className="dashboard__activity-meta">{activity.station} · {activity.time}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+        return (
+          <div key={position} style={{ marginBottom: '2rem' }}>
+            <VoteChart 
+              data={chartData} 
+              title={`Election Progress — Live Vote Tally (${position})`} 
+            />
+          </div>
+        );
+      })}
+
+
     </div>
   );
 }
