@@ -5,7 +5,7 @@ import {
   HiOutlineXMark, HiOutlineExclamationTriangle
 } from 'react-icons/hi2';
 import axios from 'axios';
-import './page.css';
+import './manageStudents.css';
 
 const API = 'http://localhost:5000';
 

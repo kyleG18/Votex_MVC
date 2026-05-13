@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HiOutlineIdentification, HiOutlineCheckBadge } from 'react-icons/hi2';
 import axios from 'axios';
-import './page.css';
+import './login.css';
 
 const API = 'http://localhost:5000';
 

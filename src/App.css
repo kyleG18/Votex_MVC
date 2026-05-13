@@ -13,3 +13,14 @@
   background: var(--bg-primary);
   min-height: 100vh;
 }
+
+@media (max-width: 900px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+  .admin-layout__content {
+    margin-left: 0;
+    padding: var(--space-4);
+    padding-top: 70px; /* Space for mobile hamburger button */
+  }
+}

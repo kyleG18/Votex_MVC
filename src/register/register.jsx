@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './page.css';
+import './register.css';
 
 function RegisterPage() {
   const navigate = useNavigate();

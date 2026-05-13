@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { HiOutlineShieldCheck, HiOutlineKey, HiOutlineUser, HiOutlineLockClosed } from 'react-icons/hi2';
-import './page.css';
+import './adminRegister.css';
 
 function AdminRegisterPage() {
   const navigate = useNavigate();

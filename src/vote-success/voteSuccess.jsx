@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { HiOutlineCheckBadge, HiOutlineArrowRightOnRectangle } from 'react-icons/hi2';
-import './page.css';
+import './voteSuccess.css';
 
 function VoteSuccessPage() {
   const navigate = useNavigate();

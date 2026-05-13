@@ -3,7 +3,7 @@ import { HiOutlineUsers, HiOutlineCheckBadge, HiOutlineClock } from 'react-icons
 import axios from 'axios';
 import StatCard from '../Component/stat-card/statcard';
 import VoteChart from '../Component/vote-chart/votechart';
-import './page.css';
+import './dashboard.css';
 
 function DashboardPage() {
   const [stats, setStats] = useState({

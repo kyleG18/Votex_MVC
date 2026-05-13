@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { HiOutlineCog6Tooth, HiOutlineCalendarDays, HiOutlineShieldCheck, HiOutlineBellAlert } from 'react-icons/hi2';
 import axios from 'axios';
-import './page.css';
+import './settings.css';
 
 function SettingsPage() {
   const [settings, setSettings] = useState({

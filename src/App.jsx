@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Sidebar from './Component/sidebar/sidebar';
-import LoginPage from './login/page';
-import RegisterPage from './register/page';
-import VoteCastingPage from './vote-casting/page';
-import VoteSuccessPage from './vote-success/page';
-import DashboardPage from './dashboard/page';
-import ManageCandidatesPage from './manage-candidates/page';
-import ManageStudentsPage from './manage-students/page';
-import ReportsPage from './reports/page';
-import SettingsPage from './settings/page';
-import ManageAdminsPage from './manage-admins/page';
-import AdminLoginPage from './admin-login/page';
-import AdminRegisterPage from './admin-register/page';
+import LoginPage from './login/login';
+import RegisterPage from './register/register';
+import VoteCastingPage from './vote-casting/voteCasting';
+import VoteSuccessPage from './vote-success/voteSuccess';
+import DashboardPage from './dashboard/dashboard';
+import ManageCandidatesPage from './manage-candidates/manageCandidates';
+import ManageStudentsPage from './manage-students/manageStudents';
+import ReportsPage from './reports/reports';
+import SettingsPage from './settings/settings';
+import ManageAdminsPage from './manage-admins/manageAdmins';
+import AdminLoginPage from './admin-login/adminLogin';
+import AdminRegisterPage from './admin-register/adminRegister';
 import './App.css';
 
 /* Admin Layout - wraps all admin pages with sidebar */

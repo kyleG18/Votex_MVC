@@ -1,0 +1,21 @@
+{
+  "short_name": "VoteX",
+  "name": "VoteX - Smart Campus Voting",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "192x192 512x512 any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "jpc-logo.jpg",
+      "type": "image/jpeg",
+      "sizes": "1080x1041",
+      "purpose": "any"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4f46e5",
+  "background_color": "#ffffff"
+}

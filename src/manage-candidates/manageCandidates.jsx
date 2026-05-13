@@ -5,7 +5,7 @@ import {
 } from 'react-icons/hi2';
 import axios from 'axios';
 import data from '../../data.json';
-import './page.css';
+import './manageCandidates.css';
 
 const API = 'http://localhost:5000';
 
@@ -203,9 +203,10 @@ function ManageCandidatesPage() {
                 </div>
                 <div className="mc-form-group">
                   <label>Position</label>
-                  <select required value={formData.position} onChange={e => setFormData(p => ({ ...p, position: e.target.value }))}>
-                    {data.positions.map(p => <option key={p} value={p}>{p}</option>)}
-                  </select>
+                  <input type="text" list="positions-list" required value={formData.position} onChange={e => setFormData(p => ({ ...p, position: e.target.value }))} placeholder="Select or type new position..." />
+                  <datalist id="positions-list">
+                    {data.positions.map(p => <option key={p} value={p} />)}
+                  </datalist>
                 </div>
                 <div className="mc-form-group">
                   <label>Party Affiliation</label>
@@ -286,9 +287,10 @@ function ManageCandidatesPage() {
                 </div>
                 <div className="mc-form-group">
                   <label>Position</label>
-                  <select required value={editData.position || ''} onChange={e => setEditData(p => ({ ...p, position: e.target.value }))}>
-                    {data.positions.map(p => <option key={p} value={p}>{p}</option>)}
-                  </select>
+                  <input type="text" list="edit-positions-list" required value={editData.position || ''} onChange={e => setEditData(p => ({ ...p, position: e.target.value }))} placeholder="Select or type new position..." />
+                  <datalist id="edit-positions-list">
+                    {data.positions.map(p => <option key={p} value={p} />)}
+                  </datalist>
                 </div>
                 <div className="mc-form-group">
                   <label>Party Affiliation</label>

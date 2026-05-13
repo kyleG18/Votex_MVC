@@ -481,6 +481,16 @@
 }
 
 @media (max-width: 600px) {
+  .vote-casting__header-section {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .vote-casting__voter-profile {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
   .vote-casting__stepper {
     min-width: 600px;
     padding-top: var(--space-2);

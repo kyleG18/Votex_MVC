@@ -128,3 +128,11 @@
   font-size: var(--font-size-xs);
   color: var(--slate-400);
 }
+
+@media (max-width: 768px) {
+  .dashboard__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+}

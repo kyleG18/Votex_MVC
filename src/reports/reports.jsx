@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import './page.css';
+import './reports.css';
 
 const COLORS = ['#4f46e5', '#7c3aed', '#6366f1', '#818cf8', '#a78bfa'];
 

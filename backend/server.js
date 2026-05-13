@@ -363,9 +363,52 @@ app.post('/api/voters/login-rfid', async (req, res) => {
       return res.status(404).json({ success: false, message: 'Unrecognized ID Card. Please register your card with an administrator.' });
     }
 
-    // Check settings for multiple votes allowance
-    const [settingsRows] = await dbPool.query('SELECT allow_multiple_votes FROM settings WHERE id = 1');
-    const allowMultipleVotes = settingsRows.length > 0 ? settingsRows[0].allow_multiple_votes : false;
+    // Check settings for multiple votes allowance and voting period
+    const [settingsRows] = await dbPool.query('SELECT * FROM settings WHERE id = 1');
+    let allowMultipleVotes = false;
+    
+    if (settingsRows.length > 0) {
+      const settings = settingsRows[0];
+      allowMultipleVotes = settings.allow_multiple_votes;
+      
+      // Validate Voting Dates
+      const now = new Date();
+      const currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      
+      if (settings.start_date && settings.end_date) {
+        const startDate = new Date(settings.start_date);
+        const endDate = new Date(settings.end_date);
+        startDate.setHours(0,0,0,0);
+        endDate.setHours(0,0,0,0);
+        
+        if (currentDate < startDate) {
+          return res.status(403).json({ success: false, message: 'The election has not started yet. Please wait for the voting period.' });
+        }
+        if (currentDate > endDate) {
+          return res.status(403).json({ success: false, message: 'The election voting period has already ended.' });
+        }
+      }
+      
+      // Validate Voting Hours
+      if (settings.voting_time_start && settings.voting_time_end) {
+        const currentTimeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':00';
+        
+        // Format times for display (remove seconds)
+        const formatTime = (timeStr) => {
+          const [h, m] = timeStr.split(':');
+          const date = new Date();
+          date.setHours(h, m);
+          return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+        };
+        
+        if (currentTimeStr < settings.voting_time_start) {
+          return res.status(403).json({ success: false, message: `Voting is currently closed. Today's voting hours start at ${formatTime(settings.voting_time_start)}.` });
+        }
+        if (currentTimeStr > settings.voting_time_end) {
+          return res.status(403).json({ success: false, message: `Voting is closed for today. Voting hours ended at ${formatTime(settings.voting_time_end)}.` });
+        }
+      }
+    }
 
     const student = students[0];
     if (student.has_voted && !allowMultipleVotes) {
@@ -416,10 +459,19 @@ app.post('/api/votes', async (req, res) => {
     // Insert votes
     for (const [position, candidateId] of Object.entries(selections)) {
       if (candidateId) {
-        await connection.query(
-          'INSERT INTO votes (student_id, candidate_id, position) VALUES (?, ?, ?)',
-          [student_id, candidateId, position]
-        );
+        if (Array.isArray(candidateId)) {
+          for (const cid of candidateId) {
+            await connection.query(
+              'INSERT INTO votes (student_id, candidate_id, position) VALUES (?, ?, ?)',
+              [student_id, cid, position]
+            );
+          }
+        } else {
+          await connection.query(
+            'INSERT INTO votes (student_id, candidate_id, position) VALUES (?, ?, ?)',
+            [student_id, candidateId, position]
+          );
+        }
       }
     }
 
@@ -493,14 +545,23 @@ app.get('/api/dashboard/stats', async (req, res) => {
 
 app.get('/api/dashboard/tally', async (req, res) => {
   try {
-    // Read positions from data.json (or could hardcode them if preferred)
-    const dataPath = path.join(__dirname, '../data.json');
-    const rawData = fs.readFileSync(dataPath, 'utf8');
-    const jsonData = JSON.parse(rawData);
-    const positions = jsonData.positions;
-
     // Fetch actual candidates from DB
     const [dbCandidates] = await dbPool.query('SELECT * FROM candidates');
+
+    // Dynamically extract unique positions from candidates to ensure all positions (including custom ones) are shown
+    const rawPositions = [...new Set(dbCandidates.map(c => c.position))];
+    const POSITION_ORDER = [
+      'President', 'Vice President', 'Secretary', 'Treasurer', 'Auditor',
+      'P.R.O.', 'Business Manager', 'Peace Officer'
+    ];
+    const positions = rawPositions.sort((a, b) => {
+      const indexA = POSITION_ORDER.indexOf(a);
+      const indexB = POSITION_ORDER.indexOf(b);
+      if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
 
     // Fetch actual vote counts from DB
     const [dbVotes] = await dbPool.query('SELECT candidate_id, COUNT(*) as vote_count FROM votes GROUP BY candidate_id');

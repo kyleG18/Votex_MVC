@@ -527,4 +527,20 @@
   .login-page__btn {
     width: 100%;
   }
+  .welcome-card {
+    padding: 32px 24px;
+    max-width: 100%;
+  }
+  .welcome-card__avatar-img, .welcome-card__avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 1.8rem;
+  }
+  .welcome-card__name {
+    font-size: 1.5rem;
+  }
+  .welcome-card__info {
+    flex-direction: column;
+    gap: 8px;
+  }
 }

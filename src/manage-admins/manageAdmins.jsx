@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { HiOutlineUserPlus, HiOutlineCheck, HiOutlineXMark, HiOutlineTrash, HiOutlineUsers } from 'react-icons/hi2';
 import axios from 'axios';
-import './page.css';
+import './manageAdmins.css';
 
 function ManageAdminsPage() {
   const [pendingAdmins, setPendingAdmins] = useState([]);

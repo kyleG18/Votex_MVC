@@ -11,7 +11,7 @@ import './votesummary.css';
  * - Framer Motion entry/update animations
  */
 function VoteSummary({ positions, selections, candidates, onJump, currentIndex }) {
-  const selectedCount = Object.keys(selections).filter(k => selections[k] !== undefined).length;
+  const selectedCount = Object.keys(selections).filter(k => selections[k] !== undefined && (!Array.isArray(selections[k]) || selections[k].length > 0)).length;
   const progressPercent = Math.round((selectedCount / positions.length) * 100);
   
   // Progress Circle Constants
@@ -87,26 +87,34 @@ function VoteSummary({ positions, selections, candidates, onJump, currentIndex }
 
         <div className="vote-summary-panel__list">
           {positions.map((pos, idx) => {
-            const selectedId = selections[pos];
-            const candidate = candidates.find(c => c.id === selectedId);
+            const selection = selections[pos];
+            const isCompleted = selection !== undefined && (!Array.isArray(selection) || selection.length > 0);
+            const selectedArr = Array.isArray(selection) ? selection : (selection ? [selection] : []);
+            const selectedCandidates = selectedArr.map(id => candidates.find(c => c.id === id)).filter(Boolean);
+            
+            const displayCandidate = selectedCandidates.length > 0 ? selectedCandidates[0] : null;
+            const displayName = selectedCandidates.length > 1 
+                 ? `${selectedCandidates.length} Selected`
+                 : (selectedCandidates.length === 1 ? selectedCandidates[0].name : 'Pending Selection...');
+
             const isActive = currentIndex === idx;
 
             return (
               <motion.div 
                 key={pos} 
-                className={`vote-summary-panel__item ${isActive ? 'active' : ''} ${selectedId ? 'selected' : ''}`}
+                className={`vote-summary-panel__item ${isActive ? 'active' : ''} ${isCompleted ? 'selected' : ''}`}
                 onClick={() => onJump && onJump(idx)}
                 whileHover={{ x: 5 }}
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               >
                 <div className="vote-summary-panel__item-main">
                   <div className="vote-summary-panel__avatar-mini">
-                    {candidate ? (
-                      candidate.image_url ? (
-                        <img src={candidate.image_url} alt="" />
+                    {displayCandidate ? (
+                      displayCandidate.image_url ? (
+                        <img src={displayCandidate.image_url} alt="" />
                       ) : (
                         <div className="avatar-fallback-mini">
-                          {candidate.name.split(' ').map(n=>n[0]).join('').slice(0,1)}
+                          {displayCandidate.name.split(' ').map(n=>n[0]).join('').slice(0,1)}
                         </div>
                       )
                     ) : (
@@ -116,11 +124,11 @@ function VoteSummary({ positions, selections, candidates, onJump, currentIndex }
                   <div className="vote-summary-panel__item-info">
                     <span className="vote-summary-panel__item-pos">{pos}</span>
                     <span className="vote-summary-panel__item-name">
-                      {candidate ? candidate.name : 'Pending Selection...'}
+                      {displayName}
                     </span>
                   </div>
                 </div>
-                {selectedId && (
+                {isCompleted && (
                   <motion.div 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}

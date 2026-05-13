@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import CandidateCard from '../Component/candidate-card/candidatecard';
 import VoteSummary from '../Component/vote-summary/votesummary';
-import './page.css';
+import './voteCasting.css';
 
 const API = 'http://localhost:5000';
 
@@ -124,11 +124,35 @@ function VoteCastingPage() {
   const currentPosition = positions[currentPositionIndex];
   const positionCandidates = candidates.filter(c => c.position === currentPosition);
 
+  const getMaxSelections = (pos) => {
+    const posLower = pos.toLowerCase();
+    if (posLower.includes('councilor') || posLower.includes('senator')) return 8; // Adjust max winners here
+    if (posLower.includes('representative')) return 2;
+    return 1;
+  };
+
   const handleSelect = (candidateId) => {
-    setSelections(prev => ({
-      ...prev,
-      [currentPosition]: prev[currentPosition] === candidateId ? undefined : candidateId,
-    }));
+    const max = getMaxSelections(currentPosition);
+    
+    setSelections(prev => {
+      const current = prev[currentPosition];
+      
+      if (max === 1) {
+        return { ...prev, [currentPosition]: current === candidateId ? undefined : candidateId };
+      }
+      
+      const selectedArr = Array.isArray(current) ? current : (current ? [current] : []);
+      
+      if (selectedArr.includes(candidateId)) {
+        // Deselect
+        const newArr = selectedArr.filter(id => id !== candidateId);
+        return { ...prev, [currentPosition]: newArr.length > 0 ? newArr : undefined };
+      } else {
+        // Select (if under limit)
+        if (selectedArr.length >= max) return prev;
+        return { ...prev, [currentPosition]: [...selectedArr, candidateId] };
+      }
+    });
   };
 
   const handleNext = () => {
@@ -166,7 +190,7 @@ function VoteCastingPage() {
   };
 
   const isLastPosition = currentPositionIndex === positions.length - 1;
-  const allSelected = Object.keys(selections).filter(k => selections[k]).length === positions.length;
+  const allSelected = positions.every(pos => selections[pos] && (!Array.isArray(selections[pos]) || selections[pos].length > 0));
 
   return (
     <div className="vote-casting">
@@ -201,12 +225,14 @@ function VoteCastingPage() {
 
               <div className="vote-casting__modal-summary">
                 {positions.map(pos => {
-                  const selected = candidates.find(c => c.id === selections[pos]);
+                  const selection = selections[pos];
+                  const selectedArr = Array.isArray(selection) ? selection : (selection ? [selection] : []);
+                  const names = selectedArr.map(id => candidates.find(c => c.id === id)?.name).join(', ');
                   return (
                     <div key={pos} className="vote-casting__modal-item">
                       <span className="vote-casting__modal-pos">{pos}</span>
                       <span className="vote-casting__modal-name">
-                        {selected ? selected.name : '—'}
+                        {names || '—'}
                       </span>
                     </div>
                   );
@@ -246,7 +272,10 @@ function VoteCastingPage() {
               Current Stage: <strong>{currentPosition}</strong>
             </div>
             <p className="vote-casting__instruction">
-              Choose your representative for <strong>{currentPosition}</strong> below.
+              {getMaxSelections(currentPosition) > 1 
+                ? `Select up to ${getMaxSelections(currentPosition)} candidates for ` 
+                : `Choose your representative for `}
+              <strong>{currentPosition}</strong> below.
             </p>
           </div>
 
@@ -291,7 +320,7 @@ function VoteCastingPage() {
 
             {positions.map((pos, idx) => {
               const isActive = idx === currentPositionIndex;
-              const isCompleted = selections[pos] !== undefined;
+              const isCompleted = selections[pos] !== undefined && (!Array.isArray(selections[pos]) || selections[pos].length > 0);
               
               const shortLabel = pos.includes('Grade') ? pos.replace('Grade ', 'G') : pos.split(' ')[0];
 
@@ -361,7 +390,7 @@ function VoteCastingPage() {
               <CandidateCard
                 key={candidate.id}
                 candidate={candidate}
-                isSelected={selections[currentPosition] === candidate.id}
+                isSelected={Array.isArray(selections[currentPosition]) ? selections[currentPosition].includes(candidate.id) : selections[currentPosition] === candidate.id}
                 onSelect={() => handleSelect(candidate.id)}
                 animationDelay={index * 0.1}
               />
