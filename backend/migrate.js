@@ -9,6 +9,7 @@ async function migrate() {
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'votex_db',
+    port: process.env.DB_PORT || 3306,
   });
 
   try {
