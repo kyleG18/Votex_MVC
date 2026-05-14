@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { HiOutlineShieldCheck, HiOutlineKey, HiOutlineUser, HiOutlineLockClosed } from 'react-icons/hi2';
 import './adminRegister.css';
 
@@ -33,7 +33,7 @@ function AdminRegisterPage() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/admins/register', formData);
+      const response = await api.post('/api/admins/register', formData);
       
       setSuccessMsg(response.data.message);
       

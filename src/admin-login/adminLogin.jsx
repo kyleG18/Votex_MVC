@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { HiOutlineShieldCheck, HiOutlineLockClosed, HiOutlineUser } from 'react-icons/hi2';
 import './adminLogin.css';
 
@@ -14,14 +14,16 @@ function AdminLoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMsg('');
+    setIsLoading(true);
 
     if (!username || !password) {
       setErrorMsg('Please fill in all fields.');
+      setIsLoading(false);
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/admins/login', { username, password });
+      const response = await api.post('/api/admins/login', { username, password });
       
       if (response.data.success) {
         // Save session data (in a real app, use HTTP-only cookies or JWT tokens)

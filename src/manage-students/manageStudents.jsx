@@ -4,10 +4,9 @@ import {
   HiOutlinePlus, HiOutlineIdentification, HiOutlineTrash, HiOutlinePencilSquare,
   HiOutlineXMark, HiOutlineExclamationTriangle
 } from 'react-icons/hi2';
-import axios from 'axios';
+import api from '../api/axios';
+import { formatImageUrl } from '../utils/imageUtils';
 import './manageStudents.css';
-
-const API = 'http://localhost:5000';
 
 function ManageStudentsPage() {
   const [students, setStudents] = useState([]);
@@ -50,7 +49,7 @@ function ManageStudentsPage() {
 
   const fetchStudents = async () => {
     try {
-      const res = await axios.get(`${API}/api/students`);
+      const res = await api.get('/api/students');
       if (res.data.success) setStudents(res.data.students);
     } catch (err) { console.error('Fetch error:', err.message); }
   };
@@ -66,7 +65,7 @@ function ManageStudentsPage() {
     try {
       const data = new FormData();
       Object.entries(formData).forEach(([k, v]) => { if (v !== null && v !== '') data.append(k, v); });
-      const res = await axios.post(`${API}/api/students`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const res = await api.post('/api/students', data, { headers: { 'Content-Type': 'multipart/form-data' } });
       if (res.data.success) {
         setEnrollMsg({ text: res.data.message, type: 'success' });
         setFormData({ student_id: '', first_name: '', last_name: '', email: '', course: '', year_level: '', rfid_uid: '', profile_pic: null });
@@ -93,7 +92,7 @@ function ManageStudentsPage() {
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     try {
-      await axios.delete(`${API}/api/students/${deleteTarget.id}`);
+      await api.delete(`/api/students/${deleteTarget.id}`);
       if (selectedStudent?.id === deleteTarget.id) setSelectedStudent(null);
       setDeleteTarget(null);
       fetchStudents();
@@ -115,7 +114,7 @@ function ManageStudentsPage() {
       rfid_uid: student.rfid_uid || '',
       profile_pic: null
     });
-    setEditPreview(student.profile_pic ? `${API}${student.profile_pic}` : null);
+    setEditPreview(formatImageUrl(student.profile_pic));
     setEditMsg({ text: '', type: '' });
   };
 
@@ -135,7 +134,7 @@ function ManageStudentsPage() {
       // Only send file if a new one was selected
       if (editData.profile_pic) data.append('profile_pic', editData.profile_pic);
 
-      const res = await axios.put(`${API}/api/students/${selectedStudent.id}`, data, {
+      const res = await api.put(`/api/students/${selectedStudent.id}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       if (res.data.success) {
@@ -423,7 +422,7 @@ function ManageStudentsPage() {
                 onClick={() => openEdit(student)}>
                 <td>
                   {student.profile_pic ? (
-                    <img src={`${API}${student.profile_pic}`} alt={student.first_name}
+                    <img src={formatImageUrl(student.profile_pic)} alt={student.first_name}
                       className="manage-students__row-pic" />
                   ) : (
                     <div className="manage-students__row-avatar">

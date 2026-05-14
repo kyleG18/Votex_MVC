@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { HiOutlineDocumentArrowDown } from 'react-icons/hi2';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
-import axios from 'axios';
+import api from '../api/axios';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import './reports.css';
@@ -24,8 +24,8 @@ function ReportsPage() {
     const fetchData = async () => {
       try {
         const [statsRes, tallyRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/dashboard/stats'),
-          axios.get('http://localhost:5000/api/dashboard/tally')
+          api.get('/api/dashboard/stats'),
+          api.get('/api/dashboard/tally')
         ]);
         
         if (statsRes.data.success) {

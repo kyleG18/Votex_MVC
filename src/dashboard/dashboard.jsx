@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { HiOutlineUsers, HiOutlineCheckBadge, HiOutlineClock } from 'react-icons/hi2';
-import axios from 'axios';
+import api from '../api/axios';
 import StatCard from '../Component/stat-card/statcard';
 import VoteChart from '../Component/vote-chart/votechart';
 import './dashboard.css';
@@ -20,8 +20,8 @@ function DashboardPage() {
     const fetchData = async () => {
       try {
         const [statsRes, tallyRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/dashboard/stats'),
-          axios.get('http://localhost:5000/api/dashboard/tally')
+          api.get('/api/dashboard/stats'),
+          api.get('/api/dashboard/tally')
         ]);
         
         if (statsRes.data.success) {

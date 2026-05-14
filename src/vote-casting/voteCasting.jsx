@@ -2,12 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HiOutlineArrowRight, HiOutlineArrowLeft, HiOutlineArrowRightOnRectangle } from 'react-icons/hi2';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
+import api from '../api/axios';
 import CandidateCard from '../Component/candidate-card/candidatecard';
 import VoteSummary from '../Component/vote-summary/votesummary';
+import { formatImageUrl } from '../utils/imageUtils';
 import './voteCasting.css';
-
-const API = 'http://localhost:5000';
 
 function VoteCastingPage() {
   const navigate = useNavigate();
@@ -46,7 +45,7 @@ function VoteCastingPage() {
     // Fetch Candidates and Positions
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${API}/api/candidates`);
+        const res = await api.get('/api/candidates');
         if (res.data.success) {
           const fetchedCandidates = res.data.candidates.map(c => ({
             id: c.id,
@@ -55,7 +54,7 @@ function VoteCastingPage() {
             party: c.partylist,
             course: c.course,
             bio: c.bio,
-            image_url: c.image_url ? `${API}${c.image_url}` : null
+            image_url: c.image_url
           }));
           
           setCandidates(fetchedCandidates);
@@ -174,7 +173,7 @@ function VoteCastingPage() {
   const confirmVote = async () => {
     setSubmitError('');
     try {
-      const response = await axios.post(`${API}/api/votes`, {
+      const response = await api.post('/api/votes', {
         student_id: voter.id, // The internal DB id of the student
         selections
       });
@@ -287,7 +286,7 @@ function VoteCastingPage() {
             <div className="voter-profile__avatar">
               {voter?.profile_pic ? (
                 <img 
-                  src={`${API}${voter.profile_pic}`} 
+                  src={formatImageUrl(voter.profile_pic)} 
                   alt={voter.fullName} 
                   className="voter-profile__image" 
                 />

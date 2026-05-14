@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HiOutlineIdentification, HiOutlineCheckBadge } from 'react-icons/hi2';
-import axios from 'axios';
+import api from '../api/axios';
 import './login.css';
 
-const API = 'http://localhost:5000';
+// Remove the API constant as we'll use the relative paths with the 'api' instance
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -68,7 +68,7 @@ function LoginPage() {
     setErrorMsg('');
 
     try {
-      const response = await axios.post(`${API}/api/voters/login-rfid`, {
+      const response = await api.post('/api/voters/login-rfid', {
         rfid_uid: rfidValue.trim()
       });
 

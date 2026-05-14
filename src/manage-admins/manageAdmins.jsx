@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { HiOutlineUserPlus, HiOutlineCheck, HiOutlineXMark, HiOutlineTrash, HiOutlineUsers } from 'react-icons/hi2';
-import axios from 'axios';
+import api from '../api/axios';
 import './manageAdmins.css';
 
 function ManageAdminsPage() {
@@ -14,8 +14,8 @@ function ManageAdminsPage() {
   const fetchAdmins = async () => {
     try {
       const [pendingRes, activeRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/admins/pending'),
-        axios.get('http://localhost:5000/api/admins/approved')
+        api.get('/api/admins/pending'),
+        api.get('/api/admins/approved')
       ]);
       
       if (pendingRes.data.success) {
@@ -37,7 +37,7 @@ function ManageAdminsPage() {
 
   const handleApprove = async (id, fullName) => {
     try {
-      await axios.put(`http://localhost:5000/api/admins/approve/${id}`);
+      await api.put(`/api/admins/approve/${id}`);
       setSuccessMsg(`Admin account for ${fullName} has been approved.`);
       fetchAdmins(); // Refresh the lists
       setTimeout(() => setSuccessMsg(''), 3000);
@@ -49,7 +49,7 @@ function ManageAdminsPage() {
   const handleReject = async (id) => {
     if (!window.confirm('Are you sure you want to reject this application?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/admins/reject/${id}`);
+      await api.delete(`/api/admins/reject/${id}`);
       setSuccessMsg('Admin application rejected and removed.');
       fetchAdmins(); // Refresh the lists
       setTimeout(() => setSuccessMsg(''), 3000);
@@ -61,7 +61,7 @@ function ManageAdminsPage() {
   const handleDelete = async (id, fullName) => {
     if (!window.confirm(`Are you sure you want to delete the admin account for ${fullName}?`)) return;
     try {
-      const response = await axios.delete(`http://localhost:5000/api/admins/${id}`);
+      const response = await api.delete(`/api/admins/${id}`);
       if (response.data.success) {
         setSuccessMsg(`Admin account for ${fullName} has been deleted.`);
         fetchAdmins(); // Refresh the lists

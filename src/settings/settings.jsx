@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { HiOutlineCog6Tooth, HiOutlineCalendarDays, HiOutlineShieldCheck, HiOutlineBellAlert } from 'react-icons/hi2';
-import axios from 'axios';
+import api from '../api/axios';
 import './settings.css';
 
 function SettingsPage() {
@@ -31,7 +31,7 @@ function SettingsPage() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/settings');
+        const response = await api.get('/api/settings');
         if (response.data.success && response.data.settings) {
           const s = response.data.settings;
           setSettings({
@@ -71,7 +71,7 @@ function SettingsPage() {
     setSaved(false);
     
     try {
-      const response = await axios.put('http://localhost:5000/api/settings', settings);
+      const response = await api.put('/api/settings', settings);
       if (response.data.success) {
         setSaved(true);
         // Scroll to top to see the toast

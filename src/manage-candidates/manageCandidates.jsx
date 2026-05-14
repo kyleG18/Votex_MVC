@@ -3,11 +3,10 @@ import {
   HiOutlineMagnifyingGlass, HiOutlinePlus, HiOutlineTrash, HiOutlinePencilSquare,
   HiOutlineXMark, HiOutlineExclamationTriangle
 } from 'react-icons/hi2';
-import axios from 'axios';
+import api from '../api/axios';
+import { formatImageUrl } from '../utils/imageUtils';
 import data from '../../data.json';
 import './manageCandidates.css';
-
-const API = 'http://localhost:5000';
 
 function ManageCandidatesPage() {
   const [candidates, setCandidates] = useState([]);
@@ -35,7 +34,7 @@ function ManageCandidatesPage() {
 
   const fetchCandidates = async () => {
     try {
-      const res = await axios.get(`${API}/api/candidates`);
+      const res = await api.get('/api/candidates');
       if (res.data.success) setCandidates(res.data.candidates);
     } catch (err) { console.error('Fetch error:', err.message); }
   };
@@ -48,7 +47,7 @@ function ManageCandidatesPage() {
       const data = new FormData();
       Object.entries(formData).forEach(([k, v]) => { if (v !== null && v !== '') data.append(k, v); });
       
-      const res = await axios.post(`${API}/api/candidates`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const res = await api.post('/api/candidates', data, { headers: { 'Content-Type': 'multipart/form-data' } });
       if (res.data.success) {
         setAddMsg({ text: res.data.message, type: 'success' });
         setFormData({ first_name: '', last_name: '', position: 'President', partylist: '', course: '', student_id: '', bio: '', image_url: null });
@@ -83,7 +82,7 @@ function ManageCandidatesPage() {
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     try {
-      await axios.delete(`${API}/api/candidates/${deleteTarget.id}`);
+      await api.delete(`/api/candidates/${deleteTarget.id}`);
       if (selectedCandidate?.id === deleteTarget.id) setSelectedCandidate(null);
       setDeleteTarget(null);
       fetchCandidates();
@@ -106,7 +105,7 @@ function ManageCandidatesPage() {
       bio: candidate.bio || '',
       image_url: null
     });
-    setEditPreview(candidate.image_url ? `${API}${candidate.image_url}` : null);
+    setEditPreview(formatImageUrl(candidate.image_url));
     setEditMsg({ text: '', type: '' });
   };
 
@@ -124,7 +123,7 @@ function ManageCandidatesPage() {
       data.append('bio', editData.bio);
       if (editData.image_url) data.append('image_url', editData.image_url);
 
-      const res = await axios.put(`${API}/api/candidates/${selectedCandidate.id}`, data, {
+      const res = await api.put(`/api/candidates/${selectedCandidate.id}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       if (res.data.success) {
@@ -370,7 +369,7 @@ function ManageCandidatesPage() {
               <tr key={candidate.id} style={{ animationDelay: `${index * 0.03}s` }} className="mc-row" onClick={() => openEdit(candidate)}>
                 <td>
                   {candidate.image_url ? (
-                    <img src={`${API}${candidate.image_url}`} alt={candidate.first_name} className="mc-row-pic" />
+                    <img src={formatImageUrl(candidate.image_url)} alt={candidate.first_name} className="mc-row-pic" />
                   ) : (
                     <div className="mc-row-avatar">{candidate.first_name?.[0]}{candidate.last_name?.[0]}</div>
                   )}
