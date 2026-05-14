@@ -3,8 +3,6 @@
 
 const StudentModel = require('../models/studentModel');
 const SettingsModel = require('../models/settingsModel');
-const path = require('path');
-const fs = require('fs');
 
 // GET /api/students - Get all students
 exports.index = async (req, res) => {
@@ -19,19 +17,18 @@ exports.index = async (req, res) => {
 // POST /api/students - Register/Enroll a student with RFID + Profile Picture
 exports.store = async (req, res) => {
   const { student_id, first_name, last_name, email, course, year_level, rfid_uid } = req.body;
-  const profile_pic = req.file ? `/uploads/${req.file.filename}` : null;
+  // Cloudinary stores the full image URL in req.file.path
+  const profile_pic = req.file ? req.file.path : null;
 
   try {
     const existing = await StudentModel.findExisting(student_id, rfid_uid);
     if (existing.length > 0) {
-      if (req.file) fs.unlinkSync(req.file.path);
       return res.status(400).json({ success: false, message: 'Student ID or RFID Tag is already registered.' });
     }
 
     await StudentModel.create({ student_id, rfid_uid, first_name, last_name, email, course, year_level, profile_pic });
     res.json({ success: true, message: 'Student successfully enrolled for RFID voting!' });
   } catch (error) {
-    if (req.file) fs.unlinkSync(req.file.path);
     res.status(500).json({ success: false, message: 'Database error', error: error.message });
   }
 };
@@ -46,7 +43,6 @@ exports.update = async (req, res) => {
     if (rfid_uid) {
       const conflict = await StudentModel.findRfidConflict(rfid_uid, id);
       if (conflict.length > 0) {
-        if (req.file) fs.unlinkSync(req.file.path);
         return res.status(400).json({ success: false, message: 'This RFID card is already registered to another student.' });
       }
     }
@@ -55,14 +51,8 @@ exports.update = async (req, res) => {
     const params = [first_name, last_name, email, course, year_level, rfid_uid || null];
 
     if (req.file) {
-      // Delete old profile pic
-      const rows = await StudentModel.findById(id);
-      if (rows.length > 0 && rows[0].profile_pic) {
-        const oldPath = path.join(__dirname, '..', rows[0].profile_pic);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-      }
       updateQuery += ', profile_pic=?';
-      params.push(`/uploads/${req.file.filename}`);
+      params.push(req.file.path); // Use Cloudinary URL
     }
 
     updateQuery += ' WHERE id=?';
@@ -73,7 +63,6 @@ exports.update = async (req, res) => {
     }
     res.json({ success: true, message: 'Student updated successfully.' });
   } catch (error) {
-    if (req.file) fs.unlinkSync(req.file.path);
     console.error('Update error:', error);
     res.status(500).json({ success: false, message: 'Database error: ' + error.message });
   }
@@ -83,17 +72,6 @@ exports.update = async (req, res) => {
 exports.destroy = async (req, res) => {
   const { id } = req.params;
   try {
-    // Try to clean up profile pic file
-    try {
-      const rows = await StudentModel.findById(id);
-      if (rows.length > 0 && rows[0].profile_pic) {
-        const filePath = path.join(__dirname, '..', rows[0].profile_pic);
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      }
-    } catch (cleanupErr) {
-      console.log('Profile pic cleanup skipped:', cleanupErr.message);
-    }
-
     const result = await StudentModel.deleteById(id);
     if (result.affectedRows === 0) {
       return res.status(404).json({ success: false, message: 'Student not found.' });

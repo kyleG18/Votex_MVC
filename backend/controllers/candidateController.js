@@ -2,8 +2,6 @@
 // MVC Pattern: Controller connects Model and View, handles business logic
 
 const CandidateModel = require('../models/candidateModel');
-const path = require('path');
-const fs = require('fs');
 
 // GET /api/candidates - Get all candidates
 exports.index = async (req, res) => {
@@ -19,11 +17,11 @@ exports.index = async (req, res) => {
 exports.store = async (req, res) => {
   const { first_name, last_name, position, partylist, course, student_id, bio } = req.body;
   try {
-    const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+    // Cloudinary stores the full image URL in req.file.path
+    const image_url = req.file ? req.file.path : null;
     await CandidateModel.create({ first_name, last_name, position, partylist, course, student_id, bio, image_url });
     res.json({ success: true, message: 'Candidate added successfully.' });
   } catch (error) {
-    if (req.file) fs.unlinkSync(req.file.path);
     console.error('Insert error:', error);
     res.status(500).json({ success: false, message: 'Database error: ' + error.message });
   }
@@ -39,14 +37,8 @@ exports.update = async (req, res) => {
     const params = [first_name, last_name, position, partylist, course, student_id, bio];
 
     if (req.file) {
-      // Delete old image
-      const rows = await CandidateModel.findById(id);
-      if (rows.length > 0 && rows[0].image_url) {
-        const oldPath = path.join(__dirname, '..', rows[0].image_url);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-      }
       updateQuery += ', image_url=?';
-      params.push(`/uploads/${req.file.filename}`);
+      params.push(req.file.path); // Use Cloudinary URL
     }
 
     updateQuery += ' WHERE id=?';
@@ -57,7 +49,6 @@ exports.update = async (req, res) => {
     }
     res.json({ success: true, message: 'Candidate updated successfully.' });
   } catch (error) {
-    if (req.file) fs.unlinkSync(req.file.path);
     console.error('Update error:', error);
     res.status(500).json({ success: false, message: 'Database error: ' + error.message });
   }
@@ -67,17 +58,6 @@ exports.update = async (req, res) => {
 exports.destroy = async (req, res) => {
   const { id } = req.params;
   try {
-    // Clean up image file
-    try {
-      const rows = await CandidateModel.findById(id);
-      if (rows.length > 0 && rows[0].image_url) {
-        const filePath = path.join(__dirname, '..', rows[0].image_url);
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      }
-    } catch (cleanupErr) {
-      console.log('Image cleanup skipped:', cleanupErr.message);
-    }
-
     const result = await CandidateModel.deleteById(id);
     if (result.affectedRows === 0) {
       return res.status(404).json({ success: false, message: 'Candidate not found.' });
