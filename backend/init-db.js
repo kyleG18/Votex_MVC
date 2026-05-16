@@ -106,10 +106,61 @@ async function initializeDatabase() {
     `);
     console.log('✅ Settings table created.');
 
+    // 6. Create Positions Table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS positions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        title VARCHAR(100) NOT NULL UNIQUE,
+        display_order INT DEFAULT 0
+      )
+    `);
+    console.log('✅ Positions table created.');
+
+    // 7. Create Partylists Table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS partylists (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL UNIQUE,
+        slogan TEXT
+      )
+    `);
+    console.log('✅ Partylists table created.');
+
+    // 8. Create Logs Table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS logs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_type ENUM('Admin', 'Student') NOT NULL,
+        action TEXT NOT NULL,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ Logs table created.');
+
+    // Insert Default Super Admin if not exists
+    const [adminRows] = await connection.query(`SELECT * FROM admins WHERE username = 'admin'`);
+    if (adminRows.length === 0) {
+      await connection.query(`
+        INSERT INTO admins (fullName, username, password, role, status) 
+        VALUES ('System Administrator', 'admin', 'admin123', 'superadmin', 'approved')
+      `);
+      console.log('✅ Default Super Admin account inserted.');
+    }
+
+    // Insert Default Positions
+    const [posRows] = await connection.query('SELECT * FROM positions');
+    if (posRows.length === 0) {
+      await connection.query(`
+        INSERT INTO positions (title, display_order) VALUES 
+        ('President', 1), ('Vice President', 2), ('Secretary', 3), 
+        ('Treasurer', 4), ('Auditor', 5), ('PIO', 6)
+      `);
+      console.log('✅ Default positions inserted.');
+    }
+
     // Insert default settings if not exists
     const [settingsRows] = await connection.query('SELECT * FROM settings WHERE id = 1');
     if (settingsRows.length === 0) {
-      // Use current date for start and end date as defaults
       await connection.query(`
         INSERT INTO settings (id, start_date, end_date) 
         VALUES (1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 7 DAY))

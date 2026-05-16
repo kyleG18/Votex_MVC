@@ -229,7 +229,39 @@ function LoginPage() {
             </div>
           </form>
 
-          <div className="login-page__admin-link">
+          <div className="login-page__admin-link" style={{ display: 'flex', justifyContent: 'center', gap: 'var(--space-4)' }}>
+            <button 
+              onClick={async () => {
+                setScanStatus('scanning');
+                try {
+                  // Fetch all students and pick the first one to simulate a login
+                  const res = await api.get('/api/students');
+                  if (res.data.success && res.data.students.length > 0) {
+                    const student = res.data.students[0];
+                    // Format the name as it's returned by the backend (they use first_name and last_name)
+                    const voterData = {
+                      ...student,
+                      fullName: `${student.first_name} ${student.last_name}`
+                    };
+                    localStorage.setItem('voter', JSON.stringify(voterData));
+                    setVoter(voterData);
+                    setScanStatus('success');
+                    setTimeout(() => setShowWelcome(true), 600);
+                  } else {
+                    setErrorMsg('No students found in database to bypass with.');
+                    setScanStatus('error');
+                  }
+                } catch (err) {
+                  setErrorMsg('Error fetching bypass student.');
+                  setScanStatus('error');
+                }
+              }} 
+              className="login-page__admin-btn" 
+              style={{ color: 'var(--slate-400)' }}
+            >
+              Demo Bypass →
+            </button>
+            
             <button onClick={handleAdminLogin} className="login-page__admin-btn" id="admin-login-btn">
               Admin Login →
             </button>
