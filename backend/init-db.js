@@ -76,7 +76,21 @@ async function initializeDatabase() {
     `);
     console.log('✅ Votes table created.');
 
-    // Insert Default Super Admin if not exists
+    // 5. Create Logs (Audit Trail) Table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS logs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        action TEXT NOT NULL,
+        performed_by VARCHAR(255) DEFAULT 'system',
+        role VARCHAR(50) DEFAULT 'admin',
+        entity_type VARCHAR(50),
+        entity_id INT,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ Logs (Audit Trail) table created.');
+
+
     const [rows] = await connection.query(`SELECT * FROM admins WHERE username = 'admin'`);
     if (rows.length === 0) {
       // In a real app, you would hash this password with bcrypt!

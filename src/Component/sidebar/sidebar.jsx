@@ -9,7 +9,8 @@ import {
   HiOutlineArrowRightOnRectangle,
   HiOutlineShieldCheck,
   HiOutlineBars3,
-  HiOutlineXMark
+  HiOutlineXMark,
+  HiOutlineClipboardDocumentList
 } from 'react-icons/hi2';
 import './sidebar.css';
 
@@ -28,8 +29,10 @@ function Sidebar() {
 
   const visibleNavItems = [...navItems];
   if (isSuperAdmin) {
-    // Insert before Settings
+    // Insert Manage Admins before Settings
     visibleNavItems.splice(4, 0, { path: '/admin/manage-admins', label: 'Manage Admins', icon: HiOutlineShieldCheck });
+    // Add Audit Trail at the end (before settings)
+    visibleNavItems.push({ path: '/admin/audit-trail', label: 'Audit Trail', icon: HiOutlineClipboardDocumentList });
   }
 
   const [isOpen, setIsOpen] = useState(false);

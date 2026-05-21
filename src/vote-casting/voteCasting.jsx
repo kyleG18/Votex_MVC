@@ -54,7 +54,7 @@ function VoteCastingPage() {
             party: c.partylist,
             course: c.course,
             bio: c.bio,
-            image_url: c.image_url
+            image_url: formatImageUrl(c.image_url)
           }));
           
           setCandidates(fetchedCandidates);

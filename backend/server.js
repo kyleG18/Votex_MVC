@@ -23,6 +23,7 @@ const candidateRoutes = require('./routes/candidateRoutes');
 const voteRoutes = require('./routes/voteRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
+const logRoutes = require('./routes/logRoutes');
 
 // Import database config for test route
 const db = require('./config/db');
@@ -74,6 +75,7 @@ app.use('/api/votes', voteRoutes);
 app.use('/api/voters', voteRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/logs', logRoutes);
 
 /* ==========================================
    START SERVER

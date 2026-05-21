@@ -3,6 +3,7 @@
 
 const VoteModel = require('../models/voteModel');
 const SettingsModel = require('../models/settingsModel');
+const LogModel = require('../models/logModel');
 
 // POST /api/votes - Cast votes
 exports.castVote = async (req, res) => {
@@ -46,6 +47,8 @@ exports.castVote = async (req, res) => {
     await connection.query('UPDATE students SET has_voted = true WHERE id = ?', [student_id]);
 
     await connection.commit();
+    const positionCount = Object.keys(selections).length;
+    LogModel.create({ action: `Student #${student_id} successfully cast their vote for ${positionCount} position(s)`, performed_by: `student_${student_id}`, role: 'student', entity_type: 'vote', entity_id: student_id }).catch(() => {});
     res.json({ success: true, message: 'Votes cast successfully' });
   } catch (error) {
     await connection.rollback();

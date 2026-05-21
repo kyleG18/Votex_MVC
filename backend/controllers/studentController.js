@@ -3,6 +3,7 @@
 
 const StudentModel = require('../models/studentModel');
 const SettingsModel = require('../models/settingsModel');
+const LogModel = require('../models/logModel');
 
 // GET /api/students - Get all students
 exports.index = async (req, res) => {
@@ -27,6 +28,7 @@ exports.store = async (req, res) => {
     }
 
     await StudentModel.create({ student_id, rfid_uid, first_name, last_name, email, course, year_level, profile_pic });
+    await LogModel.create({ action: `Student "${first_name} ${last_name}" (ID: ${student_id}) enrolled as a voter`, performed_by: 'admin', role: 'admin', entity_type: 'student' });
     res.json({ success: true, message: 'Student successfully enrolled for RFID voting!' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Database error', error: error.message });
@@ -62,6 +64,7 @@ exports.update = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Student not found.' });
     }
     res.json({ success: true, message: 'Student updated successfully.' });
+    LogModel.create({ action: `Student record #${id} was updated`, performed_by: 'admin', role: 'admin', entity_type: 'student', entity_id: id }).catch(() => {});
   } catch (error) {
     console.error('Update error:', error);
     res.status(500).json({ success: false, message: 'Database error: ' + error.message });
@@ -77,6 +80,7 @@ exports.destroy = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Student not found.' });
     }
     res.json({ success: true, message: 'Student record removed.' });
+    LogModel.create({ action: `Student record #${id} was deleted`, performed_by: 'admin', role: 'admin', entity_type: 'student', entity_id: id }).catch(() => {});
   } catch (error) {
     console.error('Delete error:', error);
     res.status(500).json({ success: false, message: 'Database error: ' + error.message });
@@ -155,6 +159,7 @@ exports.loginRfid = async (req, res) => {
         profile_pic: student.profile_pic
       }
     });
+    LogModel.create({ action: `Voter "${student.first_name} ${student.last_name}" (ID: ${student.student_id}) logged in via RFID`, performed_by: `${student.first_name} ${student.last_name}`, role: 'student', entity_type: 'student', entity_id: student.id }).catch(() => {});
   } catch (error) {
     res.status(500).json({ success: false, message: 'Database error', error: error.message });
   }

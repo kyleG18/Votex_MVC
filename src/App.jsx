@@ -12,6 +12,7 @@ import SettingsPage from './settings/settings';
 import ManageAdminsPage from './manage-admins/manageAdmins';
 import AdminLoginPage from './admin-login/adminLogin';
 import AdminRegisterPage from './admin-register/adminRegister';
+import AuditTrailPage from './audit-trail/auditTrail';
 import './App.css';
 
 /* Admin Layout - wraps all admin pages with sidebar */
@@ -46,6 +47,7 @@ function App() {
           <Route path="manage-admins" element={<ManageAdminsPage />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="audit-trail" element={<AuditTrailPage />} />
         </Route>
 
         {/* Default redirect */}

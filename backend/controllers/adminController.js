@@ -4,6 +4,7 @@
 
 const AdminModel = require('../models/adminModel');
 const SettingsModel = require('../models/settingsModel');
+const LogModel = require('../models/logModel');
 
 // POST /api/admins/register - Register a new admin
 exports.register = async (req, res) => {
@@ -23,6 +24,7 @@ exports.register = async (req, res) => {
     }
 
     await AdminModel.create(fullName, username, password, 'pending');
+    await LogModel.create({ action: `New admin registration submitted by "${username}" (${fullName}) — awaiting approval`, performed_by: username, role: 'admin', entity_type: 'admin' });
     res.json({ success: true, message: 'Registration submitted successfully. Pending approval.' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Database error', error: error.message });
@@ -51,6 +53,8 @@ exports.login = async (req, res) => {
       message: 'Login successful',
       user: { id: admin.id, username: admin.username, fullName: admin.fullName, role: admin.role }
     });
+    // Log the login (don't await to avoid delaying response)
+    LogModel.create({ action: `Admin "${admin.username}" logged in`, performed_by: admin.username, role: admin.role, entity_type: 'admin', entity_id: admin.id }).catch(() => {});
   } catch (error) {
     res.status(500).json({ success: false, message: 'Database error', error: error.message });
   }
@@ -81,6 +85,7 @@ exports.approve = async (req, res) => {
   const { id } = req.params;
   try {
     await AdminModel.approve(id);
+    await LogModel.create({ action: `Admin account #${id} approved`, performed_by: 'superadmin', role: 'superadmin', entity_type: 'admin', entity_id: id });
     res.json({ success: true, message: 'Admin approved successfully.' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Database error', error: error.message });
@@ -92,6 +97,7 @@ exports.reject = async (req, res) => {
   const { id } = req.params;
   try {
     await AdminModel.deleteById(id);
+    await LogModel.create({ action: `Admin account #${id} registration was rejected and removed`, performed_by: 'superadmin', role: 'superadmin', entity_type: 'admin', entity_id: id });
     res.json({ success: true, message: 'Admin rejected and removed.' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Database error', error: error.message });
@@ -107,6 +113,7 @@ exports.deleteAdmin = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Cannot delete a super admin account.' });
     }
     await AdminModel.deleteById(id);
+    await LogModel.create({ action: `Admin account #${id} was permanently deleted`, performed_by: 'superadmin', role: 'superadmin', entity_type: 'admin', entity_id: id });
     res.json({ success: true, message: 'Admin deleted successfully.' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Database error', error: error.message });
