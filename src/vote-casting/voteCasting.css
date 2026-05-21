@@ -1,21 +1,22 @@
 /* ===== VOTE CASTING PAGE ===== */
 
 .vote-casting {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   background: var(--bg-primary);
-  padding: var(--space-6);
+  padding: var(--space-4) var(--space-6);
   gap: var(--space-6);
+  overflow: hidden; /* Prevent page scroll */
 }
 
-/* Main Content */
+/* Main Content Column */
 .vote-casting__main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  max-width: 860px;
+  max-width: 900px;
   animation: fadeIn 0.4s ease-out;
+  height: 100%; /* Take full height */
 }
 
 /* Premium Header Section */
@@ -150,164 +151,45 @@
   border-radius: 50%;
 }
 
-/* Premium Stepper Pagination */
-.vote-casting__stepper-container {
-  width: 100%;
-  padding: var(--space-4) 0 var(--space-8);
+/* Scrollable Candidates Area */
+.vote-casting__grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-4);
+  overflow-y: auto; /* Scrollable internal grid */
+  padding-right: var(--space-2);
+  padding-bottom: var(--space-4);
   margin-top: var(--space-2);
-  overflow-x: auto;
-  scrollbar-width: none; /* Hide scrollbar for clean look */
-  -ms-overflow-style: none;
 }
 
-.vote-casting__stepper-container::-webkit-scrollbar {
-  display: none;
+/* Custom Scrollbar for Grid */
+.vote-casting__grid::-webkit-scrollbar {
+  width: 6px;
+}
+.vote-casting__grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+.vote-casting__grid::-webkit-scrollbar-thumb {
+  background: var(--slate-200);
+  border-radius: 10px;
+}
+.vote-casting__grid::-webkit-scrollbar-thumb:hover {
+  background: var(--slate-300);
 }
 
-.vote-casting__stepper {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  min-width: 800px; /* Force minimum width for smooth track */
-  position: relative;
-  padding: 0 var(--space-4);
-}
 
-/* Central Progress Track */
-.vote-casting__stepper-track {
-  position: absolute;
-  top: 15px; /* Centers with the 30px circles */
-  left: var(--space-8);
-  right: var(--space-8);
-  height: 4px;
-  background: var(--slate-100);
-  border-radius: var(--radius-full);
-  z-index: 1;
-}
 
-.vote-casting__stepper-track-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
-  border-radius: var(--radius-full);
-  box-shadow: 0 0 10px rgba(79, 70, 229, 0.2);
-}
-
-.vote-casting__stepper-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-  cursor: pointer;
-  z-index: 2;
-  flex: 1;
-  transition: all 0.3s ease;
-}
-
-.vote-casting__stepper-circle-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.vote-casting__stepper-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 2px solid var(--slate-300);
-  background: var(--bg-surface);
-  color: var(--slate-500);
-  font-size: var(--font-size-xs);
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.vote-casting__stepper-check {
-  color: #ffffff;
-  font-weight: bold;
-}
-
-.vote-casting__stepper-item.completed .vote-casting__stepper-circle {
-  background: var(--primary-600);
-  border-color: var(--primary-600);
-  color: white;
-}
-
-.vote-casting__stepper-item.active .vote-casting__stepper-circle {
-  border-color: var(--primary-600);
-  color: var(--primary-600);
-  background: #ffffff;
-  box-shadow: 0 0 15px rgba(79, 70, 229, 0.4);
-}
-
-/* Active Pulse Effect */
-.vote-casting__stepper-pulse {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--primary-500);
-  z-index: -1;
-}
-
-/* Labels & Info */
-.vote-casting__stepper-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.vote-casting__stepper-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--slate-400);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: color 0.3s ease;
-  white-space: nowrap;
-}
-
-.vote-casting__stepper-item.active .vote-casting__stepper-label,
-.vote-casting__stepper-item.completed .vote-casting__stepper-label {
-  color: var(--slate-900);
-}
-
-.vote-casting__stepper-current-tag {
-  font-size: 9px;
-  font-weight: 800;
-  color: var(--primary-600);
-  background: var(--primary-50);
-  padding: 1px 6px;
-  border-radius: 4px;
-  text-transform: uppercase;
-}
-
-/* Hover Adjustments */
-.vote-casting__stepper-item:hover:not(.active) .vote-casting__stepper-circle {
-  border-color: var(--primary-300);
-  color: var(--primary-500);
-  transform: translateY(-2px);
-}
-
-/* Candidates */
-.vote-casting__candidates {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  flex: 1;
-}
-
-/* Navigation */
+/* Navigation (Fixed at bottom) */
 .vote-casting__nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: var(--space-4);
   border-top: 1px solid var(--slate-200);
+  background: var(--bg-primary);
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .vote-casting__nav-arrows {
@@ -375,8 +257,9 @@
 
 /* Sidebar */
 .vote-casting__sidebar {
-  width: 280px;
+  width: 300px;
   flex-shrink: 0;
+  height: 100%;
 }
 
 /* Confirmation Modal */
@@ -473,10 +356,22 @@
 @media (max-width: 900px) {
   .vote-casting {
     flex-direction: column;
+    height: auto; /* Revert to normal flow for mobile */
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .vote-casting__main {
+    height: auto;
+  }
+
+  .vote-casting__grid {
+    overflow-y: visible; /* Scroll natively on mobile */
   }
 
   .vote-casting__sidebar {
     width: 100%;
+    height: auto;
   }
 }
 
