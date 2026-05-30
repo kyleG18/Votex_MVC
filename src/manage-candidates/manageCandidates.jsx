@@ -13,11 +13,16 @@ function ManageCandidatesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterPosition, setFilterPosition] = useState('all');
 
+  // Utility dropdown lists
+  const [positionsList, setPositionsList] = useState([]);
+  const [partylistsList, setPartylistsList] = useState([]);
+  const [coursesList, setCoursesList] = useState([]);
+
   // Add Candidate modal
   const [showAddModal, setShowAddModal] = useState(false);
   const [profilePreview, setProfilePreview] = useState(null);
   const [formData, setFormData] = useState({
-    first_name: '', last_name: '', position: 'President', partylist: '', course: '', student_id: '', bio: '', image_url: null
+    first_name: '', last_name: '', position: '', partylist: '', course: '', student_id: '', bio: '', image_url: null
   });
   const [addMsg, setAddMsg] = useState({ text: '', type: '' });
 
@@ -30,13 +35,42 @@ function ManageCandidatesPage() {
   // Delete Confirm Modal
   const [deleteTarget, setDeleteTarget] = useState(null); // { id, name }
 
-  useEffect(() => { fetchCandidates(); }, []);
+  useEffect(() => {
+    fetchCandidates();
+    fetchDropdowns();
+  }, []);
 
   const fetchCandidates = async () => {
     try {
       const res = await api.get('/api/candidates');
       if (res.data.success) setCandidates(res.data.candidates);
     } catch (err) { console.error('Fetch error:', err.message); }
+  };
+
+  const fetchDropdowns = async () => {
+    try {
+      const [posRes, partyRes, courseRes] = await Promise.all([
+        api.get('/api/utility/positions'),
+        api.get('/api/utility/partylists'),
+        api.get('/api/utility/courses')
+      ]);
+      const positions = posRes.data.positions || [];
+      const partylists = partyRes.data.partylists || [];
+      const courses = courseRes.data.courses || [];
+
+      setPositionsList(positions);
+      setPartylistsList(partylists);
+      setCoursesList(courses);
+
+      setFormData(prev => ({
+        ...prev,
+        position: positions[0] || 'President',
+        partylist: partylists[0] || '',
+        course: courses[0] || ''
+      }));
+    } catch (err) {
+      console.error('Dropdown fetch error:', err.message);
+    }
   };
 
   /* ─── ADD CANDIDATE ──────────────────────── */
@@ -202,18 +236,24 @@ function ManageCandidatesPage() {
                 </div>
                 <div className="mc-form-group">
                   <label>Position</label>
-                  <input type="text" list="positions-list" required value={formData.position} onChange={e => setFormData(p => ({ ...p, position: e.target.value }))} placeholder="Select or type new position..." />
-                  <datalist id="positions-list">
-                    {data.positions.map(p => <option key={p} value={p} />)}
-                  </datalist>
+                  <select required value={formData.position} onChange={e => setFormData(p => ({ ...p, position: e.target.value }))}>
+                    <option value="">Select Position</option>
+                    {positionsList.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
                 </div>
                 <div className="mc-form-group">
                   <label>Party Affiliation</label>
-                  <input type="text" required value={formData.partylist} onChange={e => setFormData(p => ({ ...p, partylist: e.target.value }))} />
+                  <select required value={formData.partylist} onChange={e => setFormData(p => ({ ...p, partylist: e.target.value }))}>
+                    <option value="">Select Party</option>
+                    {partylistsList.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
                 </div>
                 <div className="mc-form-group">
                   <label>Course</label>
-                  <input type="text" required value={formData.course} onChange={e => setFormData(p => ({ ...p, course: e.target.value }))} />
+                  <select required value={formData.course} onChange={e => setFormData(p => ({ ...p, course: e.target.value }))}>
+                    <option value="">Select Course</option>
+                    {coursesList.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
                 </div>
                 <div className="mc-form-group">
                   <label>Student ID</label>
@@ -286,18 +326,24 @@ function ManageCandidatesPage() {
                 </div>
                 <div className="mc-form-group">
                   <label>Position</label>
-                  <input type="text" list="edit-positions-list" required value={editData.position || ''} onChange={e => setEditData(p => ({ ...p, position: e.target.value }))} placeholder="Select or type new position..." />
-                  <datalist id="edit-positions-list">
-                    {data.positions.map(p => <option key={p} value={p} />)}
-                  </datalist>
+                  <select required value={editData.position || ''} onChange={e => setEditData(p => ({ ...p, position: e.target.value }))}>
+                    <option value="">Select Position</option>
+                    {positionsList.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
                 </div>
                 <div className="mc-form-group">
                   <label>Party Affiliation</label>
-                  <input type="text" required value={editData.partylist || ''} onChange={e => setEditData(p => ({ ...p, partylist: e.target.value }))} />
+                  <select required value={editData.partylist || ''} onChange={e => setEditData(p => ({ ...p, partylist: e.target.value }))}>
+                    <option value="">Select Party</option>
+                    {partylistsList.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
                 </div>
                 <div className="mc-form-group">
                   <label>Course</label>
-                  <input type="text" required value={editData.course || ''} onChange={e => setEditData(p => ({ ...p, course: e.target.value }))} />
+                  <select required value={editData.course || ''} onChange={e => setEditData(p => ({ ...p, course: e.target.value }))}>
+                    <option value="">Select Course</option>
+                    {coursesList.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
                 </div>
                 <div className="mc-form-group">
                   <label>Student ID</label>

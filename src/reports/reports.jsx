@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { HiOutlineDocumentArrowDown } from 'react-icons/hi2';
+import { HiOutlineDocumentArrowDown, HiOutlineAcademicCap } from 'react-icons/hi2';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import api from '../api/axios';
 import jsPDF from 'jspdf';
@@ -12,7 +12,8 @@ function ReportsPage() {
   const [stats, setStats] = useState({
     totalRegisteredVoters: 0,
     totalVotesCast: 0,
-    settings: null
+    settings: null,
+    courseStats: []
   });
   
   const [tallyData, setTallyData] = useState({
@@ -67,6 +68,8 @@ function ReportsPage() {
     ? ((stats.totalVotesCast / stats.totalRegisteredVoters) * 100).toFixed(1) 
     : 0;
 
+  const courseStats = Array.isArray(stats.courseStats) ? stats.courseStats : [];
+
   const handleExportPDF = () => {
     const doc = new jsPDF();
     const title = stats.settings?.election_title || 'Election Report';
@@ -99,16 +102,45 @@ function ReportsPage() {
       headStyles: { fillColor: [79, 70, 229] },
     });
     
-    // Add Results per Position
-    let currentY = doc.lastAutoTable.finalY + 15;
+    let currentY = doc.lastAutoTable.finalY + 12;
+
+    // Add Course Turnout Table
+    if (courseStats.length > 0) {
+      doc.setFontSize(14);
+      doc.setTextColor(0);
+      doc.text('Course Voting Turnout', 14, currentY);
+      currentY += 5;
+
+      const courseTableData = courseStats.map(cs => {
+        const pct = cs.total > 0 ? ((cs.voted / cs.total) * 100).toFixed(1) : 0;
+        return [
+          cs.course,
+          cs.total.toLocaleString(),
+          cs.voted.toLocaleString(),
+          cs.notVoted.toLocaleString(),
+          `${pct}%`
+        ];
+      });
+
+      autoTable(doc, {
+        startY: currentY,
+        head: [['Course', 'Total Registered', 'Votes Cast (Voted)', 'Remaining (Not Voted)', 'Turnout']],
+        body: courseTableData,
+        theme: 'grid',
+        headStyles: { fillColor: [79, 70, 229] },
+      });
+
+      currentY = doc.lastAutoTable.finalY + 15;
+    }
     
+    // Add Results per Position
     doc.setFontSize(14);
     doc.text('Detailed Results by Position', 14, currentY);
     currentY += 5;
     
     results.forEach((res, index) => {
       // Check if we need a new page
-      if (currentY > 250) {
+      if (currentY > 230) {
         doc.addPage();
         currentY = 20;
       }
@@ -201,6 +233,50 @@ function ReportsPage() {
           </div>
         </div>
       </div>
+
+      {/* Course Voter statistics Breakdown */}
+      {courseStats.length > 0 && (
+        <div className="reports__course-section">
+          <div className="reports__course-header">
+            <HiOutlineAcademicCap className="reports__course-icon" />
+            <h2 className="reports__section-title">Course Voter Turnout</h2>
+          </div>
+          <div className="reports__table-wrapper">
+            <table className="reports__table">
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Total Registered</th>
+                  <th>Votes Cast (Voted)</th>
+                  <th>Remaining (Not Voted)</th>
+                  <th>Turnout Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {courseStats.map((cs) => {
+                  const pct = cs.total > 0 ? ((cs.voted / cs.total) * 100).toFixed(1) : 0;
+                  return (
+                    <tr key={cs.course}>
+                      <td><strong>{cs.course}</strong></td>
+                      <td>{cs.total.toLocaleString()}</td>
+                      <td>{cs.voted.toLocaleString()}</td>
+                      <td>{cs.notVoted.toLocaleString()}</td>
+                      <td>
+                        <div className="reports__table-turnout">
+                          <span className="reports__table-pct">{pct}%</span>
+                          <div className="reports__table-bar-track">
+                            <div className="reports__table-bar-fill" style={{ width: `${pct}%` }} />
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Results Per Position */}
       <div className="reports__results">

@@ -9,6 +9,9 @@ const upload = require('../middleware/upload');
 // GET /api/students - Get all students
 router.get('/', studentController.index);
 
+// POST /api/students/bulk - Bulk register students
+router.post('/bulk', studentController.bulkStore);
+
 // POST /api/students - Register a new student (with file upload)
 router.post('/', upload.single('profile_pic'), studentController.store);
 

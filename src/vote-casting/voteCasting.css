@@ -155,7 +155,7 @@
 .vote-casting__grid {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: var(--space-4);
   overflow-y: auto; /* Scrollable internal grid */
   padding-right: var(--space-2);
@@ -353,57 +353,73 @@
 }
 
 /* Responsive */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .vote-casting {
     flex-direction: column;
-    height: auto; /* Revert to normal flow for mobile */
+    height: auto;
     min-height: 100vh;
-    overflow: visible;
+    overflow-y: auto;
   }
 
   .vote-casting__main {
     height: auto;
+    max-width: 100%;
   }
 
   .vote-casting__grid {
-    overflow-y: visible; /* Scroll natively on mobile */
+    overflow-y: visible;
+    margin-bottom: var(--space-4);
   }
 
   .vote-casting__sidebar {
     width: 100%;
     height: auto;
+    margin-top: var(--space-4);
   }
 }
 
 @media (max-width: 600px) {
+  .vote-casting {
+    padding: var(--space-3);
+    gap: var(--space-4);
+  }
+
   .vote-casting__header-section {
     flex-direction: column;
     gap: var(--space-4);
+    align-items: stretch;
   }
   
+  .vote-casting__title {
+    font-size: 1.75rem;
+  }
+
   .vote-casting__voter-profile {
     width: 100%;
     justify-content: space-between;
+    padding: 10px 15px;
   }
   
-  .vote-casting__stepper {
-    min-width: 600px;
-    padding-top: var(--space-2);
-  }
-  
-  .vote-casting__stepper-track {
-    left: var(--space-6);
-    right: var(--space-6);
-  }
-
   .vote-casting__nav {
     flex-direction: column-reverse;
     gap: var(--space-4);
+    padding-top: var(--space-4);
   }
   
   .vote-casting__nav-arrows {
     width: 100%;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .vote-casting__nav-arrows button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .vote-casting__nav-arrows > div {
+    align-items: stretch !important;
+    width: 100%;
   }
   
   .vote-casting__btn--logout {
@@ -420,4 +436,9 @@
   .vote-casting__modal-actions button {
     width: 100%;
   }
+  
+  .vote-casting__grid {
+    grid-template-columns: 1fr;
+  }
 }
+

@@ -388,69 +388,54 @@
   color: var(--slate-400);
 }
 
-/* Fingerprint Scanner */
-.login-page__scanner {
+/* Password Input Wrapper */
+.login-page__input-wrapper {
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-6) var(--space-4);
-  background: var(--slate-50);
-  border: 2px dashed var(--slate-300);
-  border-radius: var(--radius-xl);
-  cursor: pointer;
-  transition: all var(--transition-base);
 }
 
-.login-page__scanner:hover {
-  border-color: var(--primary-400);
-  background: var(--primary-50);
+.login-page__input--password {
+  padding-right: var(--space-10); /* Make room for the eye button */
 }
 
-.login-page__scanner--scanning {
-  border-color: var(--warning-500);
-  background: var(--warning-100);
-  animation: pulse 1s ease-in-out infinite;
-}
-
-.login-page__scanner--success {
-  border-color: var(--success-500);
-  border-style: solid;
-  background: var(--success-100);
-}
-
-.login-page__scanner--error {
-  border-color: var(--danger-500);
-  background: var(--danger-100);
-}
-
-.login-page__scanner-icon {
-  font-size: 3rem;
+.login-page__eye-btn {
+  position: absolute;
+  right: var(--space-3);
+  background: transparent;
+  border: none;
   color: var(--slate-400);
-  transition: color var(--transition-base);
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--transition-fast);
 }
 
-.login-page__scanner:hover .login-page__scanner-icon {
+.login-page__eye-btn:hover {
   color: var(--primary-500);
 }
 
-.login-page__scanner--scanning .login-page__scanner-icon {
-  color: var(--warning-500);
+.login-page__eye-btn:focus {
+  outline: none;
+  color: var(--primary-600);
 }
 
-.login-page__scanner--success .login-page__scanner-icon {
-  color: var(--success-500);
+/* Spinner for loading state */
+.login-page__spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
 }
 
-.login-page__scanner-text {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--slate-500);
-}
-
-.login-page__scanner--success .login-page__scanner-text {
-  color: var(--success-500);
-  font-weight: 600;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* Buttons */

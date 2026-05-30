@@ -9,7 +9,10 @@ const studentController = require('../controllers/studentController');
 // POST /api/votes - Cast votes
 router.post('/', voteController.castVote);
 
-// POST /api/voters/login-rfid - Voter RFID login
+// POST /api/voters/login - Voter login with Student ID + Password
+router.post('/login', studentController.loginPassword);
+
+// POST /api/voters/login-rfid - Voter RFID login (kept for backwards compatibility)
 router.post('/login-rfid', studentController.loginRfid);
 
 module.exports = router;

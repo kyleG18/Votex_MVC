@@ -10,7 +10,8 @@ import {
   HiOutlineShieldCheck,
   HiOutlineBars3,
   HiOutlineXMark,
-  HiOutlineClipboardDocumentList
+  HiOutlineClipboardDocumentList,
+  HiOutlineArchiveBox
 } from 'react-icons/hi2';
 import './sidebar.css';
 
@@ -19,6 +20,7 @@ const navItems = [
   { path: '/admin/manage-candidates', label: 'Manage Candidates', icon: HiOutlineUsers },
   { path: '/admin/manage-students', label: 'Manage Students', icon: HiOutlineUserGroup },
   { path: '/admin/reports', label: 'Reports', icon: HiOutlineDocumentChartBar },
+  { path: '/admin/archives', label: 'Archives', icon: HiOutlineArchiveBox },
   { path: '/admin/settings', label: 'Settings', icon: HiOutlineCog6Tooth },
 ];
 
@@ -30,8 +32,8 @@ function Sidebar() {
   const visibleNavItems = [...navItems];
   if (isSuperAdmin) {
     // Insert Manage Admins before Settings
-    visibleNavItems.splice(4, 0, { path: '/admin/manage-admins', label: 'Manage Admins', icon: HiOutlineShieldCheck });
-    // Add Audit Trail at the end (before settings)
+    visibleNavItems.splice(5, 0, { path: '/admin/manage-admins', label: 'Manage Admins', icon: HiOutlineShieldCheck });
+    // Add Audit Trail at the end
     visibleNavItems.push({ path: '/admin/audit-trail', label: 'Audit Trail', icon: HiOutlineClipboardDocumentList });
   }
 

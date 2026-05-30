@@ -23,6 +23,7 @@ async function initializeDatabase() {
         username VARCHAR(100) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
         role ENUM('superadmin', 'admin') DEFAULT 'admin',
+        profile_pic VARCHAR(255) DEFAULT NULL,
         status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -36,16 +37,33 @@ async function initializeDatabase() {
         student_id VARCHAR(10) UNIQUE NOT NULL,
         rfid_uid VARCHAR(50) UNIQUE,
         first_name VARCHAR(100) NOT NULL,
+        middle_name VARCHAR(100) DEFAULT NULL,
         last_name VARCHAR(100) NOT NULL,
         email VARCHAR(150) UNIQUE NOT NULL,
         course VARCHAR(100),
+        section VARCHAR(50) DEFAULT NULL,
         year_level VARCHAR(20),
         profile_pic VARCHAR(255),
+        password VARCHAR(255) DEFAULT NULL,
         has_voted BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
     console.log('✅ Students table created.');
+
+    // Add columns dynamically to existing students table in case it was already created
+    try {
+      await connection.query(`ALTER TABLE students ADD COLUMN middle_name VARCHAR(100) DEFAULT NULL`);
+      console.log('Added middle_name to students table');
+    } catch (e) {}
+    try {
+      await connection.query(`ALTER TABLE students ADD COLUMN section VARCHAR(50) DEFAULT NULL`);
+      console.log('Added section to students table');
+    } catch (e) {}
+    try {
+      await connection.query(`ALTER TABLE students ADD COLUMN password VARCHAR(255) DEFAULT NULL`);
+      console.log('Added password to students table');
+    } catch (e) {}
 
     // 3. Create Candidates Table
     await connection.query(`
@@ -120,6 +138,23 @@ async function initializeDatabase() {
     `);
     console.log('✅ Settings table created.');
 
+    // 5.1 Create Election Archives Table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS election_archives (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        election_title VARCHAR(255) NOT NULL,
+        election_year VARCHAR(4) NOT NULL,
+        start_date DATE,
+        end_date DATE,
+        total_voters INT DEFAULT 0,
+        total_votes INT DEFAULT 0,
+        candidates_data LONGTEXT NOT NULL,
+        votes_data LONGTEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ Election Archives table created.');
+
     // 6. Create Positions Table
     await connection.query(`
       CREATE TABLE IF NOT EXISTS positions (
@@ -139,6 +174,15 @@ async function initializeDatabase() {
       )
     `);
     console.log('✅ Partylists table created.');
+
+    // 8. Create Courses Table
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS courses (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL UNIQUE
+      )
+    `);
+    console.log('✅ Courses table created.');
 
     // 8. Create Logs Table
     await connection.query(`
@@ -172,6 +216,30 @@ async function initializeDatabase() {
       console.log('✅ Default positions inserted.');
     }
 
+    // Insert Default Partylists
+    const [partyRows] = await connection.query('SELECT * FROM partylists');
+    if (partyRows.length === 0) {
+      await connection.query(`
+        INSERT INTO partylists (name, slogan) VALUES 
+        ('Student Progressive Party', 'Progress through action'),
+        ('Unity Alliance', 'Together we achieve more'),
+        ('Future Leaders Party', 'Leading the next generation'),
+        ('Independent', 'Serving students directly')
+      `);
+      console.log('✅ Default partylists inserted.');
+    }
+
+    // Insert Default Courses
+    const [courseRows] = await connection.query('SELECT * FROM courses');
+    if (courseRows.length === 0) {
+      await connection.query(`
+        INSERT INTO courses (name) VALUES 
+        ('BSIT'), ('BSCS'), ('BSBA'), ('BSEd'), ('BSHM'), 
+        ('BSCRIM'), ('BSA'), ('BSME'), ('BSEE'), ('BSCE')
+      `);
+      console.log('✅ Default courses inserted.');
+    }
+
     // Insert default settings if not exists
     const [settingsRows] = await connection.query('SELECT * FROM settings WHERE id = 1');
     if (settingsRows.length === 0) {
@@ -180,6 +248,51 @@ async function initializeDatabase() {
         VALUES (1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 7 DAY))
       `);
       console.log('✅ Default settings inserted.');
+    }
+
+    // Seed election archives for 2024 if empty
+    const [archiveRows] = await connection.query('SELECT * FROM election_archives WHERE election_year = "2024"');
+    if (archiveRows.length === 0) {
+      const candidates2024 = [
+        { id: 101, name: "Christopher Oliva", position: "President", party: "Student Progressive Party", votes: 482, course: "BSIT", image_url: null },
+        { id: 102, name: "Jane Doe", position: "President", party: "Unity Alliance", votes: 315, course: "BSCS", image_url: null },
+        { id: 103, name: "John Smith", position: "Vice President", party: "Unity Alliance", votes: 425, course: "BSBA", image_url: null },
+        { id: 104, name: "Maria Santos", position: "Vice President", party: "Student Progressive Party", votes: 370, course: "BSEd", image_url: null },
+        { id: 105, name: "Lebron James", position: "Secretary", party: "Future Leaders Party", votes: 520, course: "BSHM", image_url: null },
+        { id: 106, name: "Stephen Curry", position: "Secretary", party: "Independent", votes: 275, course: "BSCRIM", image_url: null }
+      ];
+      const votes2024 = {
+        turnout_by_course: {
+          "BSIT": { voted: 210, total: 280 },
+          "BSCS": { voted: 150, total: 190 },
+          "BSBA": { voted: 120, total: 160 },
+          "BSEd": { voted: 110, total: 140 },
+          "BSHM": { voted: 90, total: 110 },
+          "BSCRIM": { voted: 70, total: 80 },
+          "BSA": { voted: 47, total: 40 }
+        },
+        turnout_by_year: {
+          "1st Year": { voted: 250, total: 320 },
+          "2nd Year": { voted: 210, total: 270 },
+          "3rd Year": { voted: 180, total: 220 },
+          "4th Year": { voted: 157, total: 190 }
+        }
+      };
+
+      await connection.query(`
+        INSERT INTO election_archives (election_title, election_year, start_date, end_date, total_voters, total_votes, candidates_data, votes_data)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        'Student Council Election 2024',
+        '2024',
+        '2024-05-15',
+        '2024-05-22',
+        1000,
+        797,
+        JSON.stringify(candidates2024),
+        JSON.stringify(votes2024)
+      ]);
+      console.log('✅ Default 2024 election archive seeded.');
     }
 
     console.log('🎉 Database initialization complete!');

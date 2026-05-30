@@ -193,3 +193,284 @@
     justify-content: center;
   }
 }
+
+/* Edit button styling */
+.btn-edit {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: white;
+  color: var(--primary-600);
+  border: 1px solid var(--primary-200);
+}
+
+.btn-edit:hover {
+  background: var(--primary-50);
+  border-color: var(--primary-300);
+}
+
+/* Modal Styles */
+.manage-admins__modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.manage-admins__modal {
+  background: white;
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 500px;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-2xl);
+  border: 1px solid var(--slate-200);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.manage-admins__modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--slate-100);
+  padding-bottom: var(--space-4);
+}
+
+.manage-admins__modal-header h2 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--slate-900);
+  margin: 0;
+}
+
+.manage-admins__modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--slate-400);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.manage-admins__modal-close:hover {
+  color: var(--slate-600);
+}
+
+.manage-admins__modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.manage-admins__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.manage-admins__form-group input,
+.manage-admins__form-group select {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--slate-300);
+  font-size: var(--font-size-sm);
+  outline: none;
+  transition: all var(--transition-fast);
+  background: white;
+  color: var(--slate-900);
+}
+
+.manage-admins__form-group input:focus,
+.manage-admins__form-group select:focus {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.manage-admins__label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--slate-700);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* RFID Registration Field */
+.manage-admins__rfid-field {
+  background: var(--slate-50);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  transition: all var(--transition-fast);
+}
+
+.manage-admins__rfid-field--success {
+  background: var(--success-50);
+  border-color: var(--success-300);
+}
+
+.manage-admins__rfid-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.manage-admins__rfid-input-wrapper .icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--slate-400);
+  font-size: 1.25rem;
+}
+
+.manage-admins__rfid-input-wrapper input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-10);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--slate-300);
+  font-size: var(--font-size-sm);
+  background: white;
+  outline: none;
+  transition: all var(--transition-fast);
+  color: var(--slate-900);
+}
+
+.manage-admins__rfid-input-wrapper input:focus {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.manage-admins__rfid-field--success .manage-admins__rfid-input-wrapper input {
+  border-color: var(--success-400);
+  background: white;
+}
+
+.manage-admins__rfid-input-wrapper .success-icon {
+  position: absolute;
+  right: var(--space-3);
+  color: var(--success-500);
+  font-size: 1.25rem;
+}
+
+.manage-admins__hint {
+  font-size: var(--font-size-xs);
+  color: var(--slate-500);
+  margin: 0;
+}
+
+.manage-admins__rfid-field--success .manage-admins__hint {
+  color: var(--success-700);
+  font-weight: 500;
+}
+
+.manage-admins__clear-rfid {
+  background: none;
+  border: none;
+  color: var(--danger-600);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  align-self: flex-start;
+  transition: color var(--transition-fast);
+}
+
+.manage-admins__clear-rfid:hover {
+  color: var(--danger-700);
+}
+
+.manage-admins__modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  border-top: 1px solid var(--slate-100);
+  padding-top: var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.btn-cancel, .btn-save {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-cancel {
+  background: white;
+  color: var(--slate-700);
+  border: 1px solid var(--slate-300);
+}
+
+.btn-cancel:hover {
+  background: var(--slate-50);
+}
+
+.btn-save {
+  background: var(--primary-600);
+  color: white;
+  border: none;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: var(--primary-700);
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.manage-admins__alert {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.manage-admins__alert--error {
+  background: var(--danger-50);
+  color: var(--danger-700);
+  border-left: 4px solid var(--danger-500);
+}
+
+.manage-admins__alert--success {
+  background: var(--success-50);
+  color: var(--success-700);
+  border-left: 4px solid var(--success-500);
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

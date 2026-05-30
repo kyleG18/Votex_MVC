@@ -1,5 +1,16 @@
-import { useState, useEffect } from 'react';
-import { HiOutlineUserPlus, HiOutlineCheck, HiOutlineXMark, HiOutlineTrash, HiOutlineUsers } from 'react-icons/hi2';
+import { useState, useEffect, useRef } from 'react';
+import { 
+  HiOutlineUserPlus, 
+  HiOutlineCheck, 
+  HiOutlineXMark, 
+  HiOutlineTrash, 
+  HiOutlineUsers, 
+  HiOutlineIdentification, 
+  HiOutlineCheckCircle, 
+  HiOutlineLockClosed, 
+  HiOutlineUser, 
+  HiOutlinePencilSquare 
+} from 'react-icons/hi2';
 import api from '../api/axios';
 import './manageAdmins.css';
 
@@ -8,8 +19,79 @@ function ManageAdminsPage() {
   const [activeAdmins, setActiveAdmins] = useState([]);
   const [successMsg, setSuccessMsg] = useState('');
   
+  // Edit State
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
+  const [editData, setEditData] = useState({
+    fullName: '',
+    username: '',
+    password: '',
+    role: 'admin',
+    rfid_uid: ''
+  });
+  const [editErrorMsg, setEditErrorMsg] = useState('');
+  const [editSuccessMsg, setEditSuccessMsg] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const rfidInputRef = useRef(null);
+
   const role = localStorage.getItem('votex_session_role');
   const isSuperAdmin = role === 'superadmin';
+
+  const openEdit = (admin) => {
+    setSelectedAdmin(admin);
+    setEditData({
+      fullName: admin.fullName || '',
+      username: admin.username || '',
+      password: '',
+      role: admin.role || 'admin',
+      rfid_uid: admin.rfid_uid || ''
+    });
+    setEditErrorMsg('');
+    setEditSuccessMsg('');
+    
+    // Auto-focus RFID input shortly after modal opens
+    setTimeout(() => {
+      if (rfidInputRef.current) {
+        rfidInputRef.current.focus();
+      }
+    }, 100);
+  };
+
+  const handleEditChange = (e) => {
+    setEditData({ ...editData, [e.target.name]: e.target.value });
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    setEditErrorMsg('');
+    setEditSuccessMsg('');
+    setIsSaving(true);
+
+    try {
+      const response = await api.put(`/api/admins/${selectedAdmin.id}`, {
+        fullName: editData.fullName,
+        username: editData.username,
+        password: editData.password || undefined,
+        role: editData.role,
+        rfid_uid: editData.rfid_uid
+      });
+
+      if (response.data.success) {
+        setEditSuccessMsg('Admin details updated successfully!');
+        fetchAdmins();
+        setTimeout(() => {
+          setSelectedAdmin(null);
+        }, 1500);
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setEditErrorMsg(error.response.data.message);
+      } else {
+        setEditErrorMsg('Failed to update admin details.');
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const fetchAdmins = async () => {
     try {
@@ -114,10 +196,16 @@ function ManageAdminsPage() {
                     <h3>{admin.fullName}</h3>
                     <p>Username: <strong>{admin.username}</strong></p>
                     <p className="date">Applied on: {new Date(admin.dateApplied).toLocaleDateString()}</p>
+                    <p className="date" style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                      <HiOutlineIdentification /> Smart Card: <strong>{admin.rfid_uid || 'None'}</strong>
+                    </p>
                   </div>
                 </div>
                 
                 <div className="manage-admins__actions">
+                  <button onClick={() => openEdit(admin)} className="btn-edit">
+                    <HiOutlinePencilSquare /> Edit
+                  </button>
                   <button onClick={() => handleReject(admin.id)} className="btn-reject">
                     <HiOutlineXMark /> Reject
                   </button>
@@ -150,10 +238,16 @@ function ManageAdminsPage() {
                     <h3>{admin.fullName}</h3>
                     <p>Username: <strong>{admin.username}</strong></p>
                     <p className="date">Role: <strong style={{ color: admin.role === 'superadmin' ? '#10b981' : '#6366f1', textTransform: 'capitalize' }}>{admin.role}</strong></p>
+                    <p className="date" style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                      <HiOutlineIdentification /> Smart Card: <strong>{admin.rfid_uid || 'None'}</strong>
+                    </p>
                   </div>
                 </div>
                 
                 <div className="manage-admins__actions">
+                  <button onClick={() => openEdit(admin)} className="btn-edit">
+                    <HiOutlinePencilSquare /> Edit
+                  </button>
                   {admin.role !== 'superadmin' ? (
                     <button onClick={() => handleDelete(admin.id, admin.fullName)} className="btn-reject">
                       <HiOutlineTrash /> Delete
@@ -171,6 +265,131 @@ function ManageAdminsPage() {
           </div>
         )}
       </div>
+
+      {/* ─── EDIT MODAL ───────────────────────── */}
+      {selectedAdmin && (
+        <div className="manage-admins__modal-overlay" onClick={() => setSelectedAdmin(null)}>
+          <div className="manage-admins__modal" onClick={(e) => e.stopPropagation()}>
+            <div className="manage-admins__modal-header">
+              <h2>Edit Administrator Details</h2>
+              <button className="manage-admins__modal-close" onClick={() => setSelectedAdmin(null)}>
+                <HiOutlineXMark />
+              </button>
+            </div>
+
+            {editErrorMsg && (
+              <div className="manage-admins__alert manage-admins__alert--error">
+                {editErrorMsg}
+              </div>
+            )}
+            {editSuccessMsg && (
+              <div className="manage-admins__alert manage-admins__alert--success">
+                {editSuccessMsg}
+              </div>
+            )}
+
+            <form onSubmit={handleSaveEdit} className="manage-admins__modal-form">
+              <div className="manage-admins__form-group">
+                <label className="manage-admins__label">
+                  <HiOutlineUser /> Full Name
+                </label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={editData.fullName}
+                  onChange={handleEditChange}
+                  required
+                  placeholder="e.g. Juan Dela Cruz"
+                />
+              </div>
+
+              <div className="manage-admins__form-group">
+                <label className="manage-admins__label">
+                  <HiOutlineUser /> Username
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  value={editData.username}
+                  onChange={handleEditChange}
+                  required
+                  placeholder="e.g. jdelacruz"
+                />
+              </div>
+
+              <div className="manage-admins__form-group">
+                <label className="manage-admins__label">
+                  <HiOutlineLockClosed /> New Password
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={editData.password}
+                  onChange={handleEditChange}
+                  placeholder="Leave blank to keep current password"
+                />
+              </div>
+
+              <div className="manage-admins__form-group">
+                <label className="manage-admins__label">Role</label>
+                <select
+                  name="role"
+                  value={editData.role}
+                  onChange={handleEditChange}
+                  required
+                >
+                  <option value="admin">Admin</option>
+                  <option value="superadmin">Super Admin</option>
+                </select>
+              </div>
+
+              <div className={`manage-admins__rfid-field ${editData.rfid_uid ? 'manage-admins__rfid-field--success' : ''}`}>
+                <label className="manage-admins__label">
+                  <HiOutlineIdentification /> Smart Card Registration (Tap card now)
+                </label>
+                <div className="manage-admins__rfid-input-wrapper">
+                  <HiOutlineIdentification className="icon" />
+                  <input
+                    type="text"
+                    ref={rfidInputRef}
+                    placeholder="Waiting for scan…"
+                    name="rfid_uid"
+                    value={editData.rfid_uid}
+                    onChange={handleEditChange}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
+                  {editData.rfid_uid && <HiOutlineCheckCircle className="success-icon" />}
+                </div>
+                <p className="manage-admins__hint">
+                  {editData.rfid_uid ? `Card Linked: ${editData.rfid_uid}` : 'Click here then tap the RFID card.'}
+                </p>
+                {editData.rfid_uid && (
+                  <button
+                    type="button"
+                    className="manage-admins__clear-rfid"
+                    onClick={() => setEditData(prev => ({ ...prev, rfid_uid: '' }))}
+                  >
+                    Clear Card Link
+                  </button>
+                )}
+              </div>
+
+              <div className="manage-admins__modal-actions">
+                <button type="button" className="btn-cancel" onClick={() => setSelectedAdmin(null)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn-save" disabled={isSaving}>
+                  {isSaving ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

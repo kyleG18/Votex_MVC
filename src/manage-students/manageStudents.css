@@ -391,68 +391,6 @@
   color: var(--slate-400);
 }
 
-/* RFID Registration Field */
-.manage-students__rfid-field {
-  background: var(--slate-50);
-  padding: var(--space-5);
-  border-radius: var(--radius-xl);
-  border: 2px dashed var(--slate-200);
-  margin-bottom: var(--space-6);
-  transition: all 0.3s;
-}
-
-.manage-students__rfid-field--success {
-  background: var(--success-50);
-  border-color: var(--success-400);
-  border-style: solid;
-}
-
-.manage-students__rfid-field label {
-  display: block;
-  font-size: var(--font-size-sm);
-  font-weight: 700;
-  color: var(--slate-800);
-  margin-bottom: var(--space-3);
-}
-
-.manage-students__rfid-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.manage-students__rfid-input-wrapper .icon {
-  position: absolute;
-  left: var(--space-3);
-  font-size: 1.5rem;
-  color: var(--slate-400);
-}
-
-.manage-students__rfid-input-wrapper input {
-  width: 100%;
-  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-12);
-  border: 2px solid var(--slate-300);
-  border-radius: var(--radius-lg);
-  font-family: monospace;
-  font-size: 1.1rem;
-  letter-spacing: 2px;
-  background: white;
-}
-
-.manage-students__rfid-input-wrapper .success-icon {
-  position: absolute;
-  right: var(--space-3);
-  font-size: 1.5rem;
-  color: var(--success-500);
-  animation: scaleIn 0.3s ease-out;
-}
-
-.manage-students__rfid-field .hint {
-  font-size: var(--font-size-xs);
-  color: var(--slate-500);
-  margin-top: var(--space-2);
-}
-
 /* Modal Actions */
 .manage-students__modal-actions {
   display: flex;
@@ -825,3 +763,81 @@
     max-width: 100%;
   }
 }
+
+/* ─── Password Reset Section Styling ─── */
+.ms-drawer__password-section {
+  border-top: 1px solid var(--slate-100);
+  padding-top: var(--space-5);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.ms-drawer__password-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.ms-drawer__password-title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--slate-800);
+}
+
+.ms-drawer__password-hint {
+  font-size: var(--font-size-xs);
+  color: var(--slate-400);
+}
+
+.ms-drawer__password-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.ms-drawer__password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ms-drawer__password-input-wrap input {
+  padding-right: var(--space-8) !important;
+}
+
+.ms-drawer__eye-btn {
+  position: absolute;
+  right: var(--space-2);
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--slate-400);
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ms-drawer__eye-btn:hover {
+  color: var(--slate-600);
+}
+
+.ms-drawer__password-match-icon {
+  position: absolute;
+  right: var(--space-2);
+  font-size: 0.9rem;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .ms-drawer__password-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

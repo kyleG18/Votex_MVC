@@ -39,12 +39,22 @@ exports.findRfidConflict = async (rfid_uid, excludeId) => {
   return rows;
 };
 
+// Find student by student_id and password (for ID+password login)
+exports.findByStudentIdAndPassword = async (student_id, password) => {
+  const [rows] = await db.query(
+    'SELECT * FROM students WHERE student_id = ? AND password = ?',
+    [student_id, password]
+  );
+  return rows;
+};
+
 // Create a new student
 exports.create = async (studentData) => {
-  const { student_id, rfid_uid, first_name, last_name, email, course, year_level, profile_pic } = studentData;
+  const { student_id, rfid_uid, first_name, middle_name, last_name, email, course, section, year_level, profile_pic, password } = studentData;
+  const defaultPassword = password || student_id; // default password = student_id
   const [result] = await db.query(
-    'INSERT INTO students (student_id, rfid_uid, first_name, last_name, email, course, year_level, profile_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-    [student_id, rfid_uid, first_name, last_name, email, course, year_level, profile_pic]
+    'INSERT INTO students (student_id, rfid_uid, first_name, middle_name, last_name, email, course, section, year_level, profile_pic, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [student_id, rfid_uid || null, first_name, middle_name || null, last_name, email, course, section || null, year_level, profile_pic || null, defaultPassword]
   );
   return result;
 };

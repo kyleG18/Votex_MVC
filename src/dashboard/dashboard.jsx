@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { HiOutlineUsers, HiOutlineCheckBadge, HiOutlineClock } from 'react-icons/hi2';
+import { HiOutlineUsers, HiOutlineCheckBadge, HiOutlineClock, HiOutlineAcademicCap } from 'react-icons/hi2';
 import api from '../api/axios';
 import StatCard from '../Component/stat-card/statcard';
 import VoteChart from '../Component/vote-chart/votechart';
@@ -9,7 +9,8 @@ function DashboardPage() {
   const [stats, setStats] = useState({
     totalRegisteredVoters: 0,
     totalVotesCast: 0,
-    settings: null
+    settings: null,
+    courseStats: []
   });
   const [tallyData, setTallyData] = useState({
     candidates: [],
@@ -59,6 +60,8 @@ function DashboardPage() {
     ? ((stats.totalVotesCast / stats.totalRegisteredVoters) * 100).toFixed(1) 
     : 0;
 
+  const courseStats = Array.isArray(stats.courseStats) ? stats.courseStats : [];
+
   return (
     <div className="dashboard" id="admin-dashboard">
       {/* Page Header */}
@@ -100,6 +103,39 @@ function DashboardPage() {
           color={timeRemaining === 'Ended' ? 'primary' : 'warning'}
         />
       </div>
+
+      {/* Course Voting Turnout */}
+      {courseStats.length > 0 && (
+        <div className="dashboard__course-section">
+          <div className="dashboard__course-header">
+            <HiOutlineAcademicCap className="dashboard__course-icon" />
+            <h2 className="dashboard__course-title">Course Voting Turnout</h2>
+          </div>
+          <div className="dashboard__course-grid">
+            {courseStats.map((cs) => {
+              const pct = cs.total > 0 ? ((cs.voted / cs.total) * 100).toFixed(1) : 0;
+              return (
+                <div key={cs.course} className="dashboard__course-card">
+                  <div className="dashboard__course-card-top">
+                    <span className="dashboard__course-name">{cs.course}</span>
+                    <span className="dashboard__course-pct">{pct}%</span>
+                  </div>
+                  <div className="dashboard__course-bar-track">
+                    <div
+                      className="dashboard__course-bar-fill"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <div className="dashboard__course-card-bottom">
+                    <span className="dashboard__course-voted">{cs.voted} voted</span>
+                    <span className="dashboard__course-total">{cs.total} total</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Vote Tally Charts for ALL positions */}
       {tallyData.positions.map((position) => {

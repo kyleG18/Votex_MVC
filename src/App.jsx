@@ -13,6 +13,7 @@ import ManageAdminsPage from './manage-admins/manageAdmins';
 import AdminLoginPage from './admin-login/adminLogin';
 import AdminRegisterPage from './admin-register/adminRegister';
 import AuditTrailPage from './audit-trail/auditTrail';
+import ArchivesPage from './archives/archives';
 import './App.css';
 
 /* Admin Layout - wraps all admin pages with sidebar */
@@ -27,6 +28,26 @@ function AdminLayout() {
   );
 }
 
+/* Protected Route for Voters */
+function VoterProtectedRoute({ children }) {
+  const voter = localStorage.getItem('voter');
+  if (!voter || voter === 'undefined' || voter === 'null') {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
+/* Protected Route for Admins */
+function AdminProtectedRoute({ children }) {
+  const adminId = localStorage.getItem('votex_admin_id');
+  const sessionRole = localStorage.getItem('votex_session_role');
+  
+  if (!adminId || !sessionRole || adminId === 'undefined' || adminId === 'null') {
+    return <Navigate to="/admin-login" replace />;
+  }
+  return children;
+}
+
 function App() {
   return (
     <Router>
@@ -34,18 +55,21 @@ function App() {
         {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/vote-casting" element={<VoteCastingPage />} />
-        <Route path="/vote-success" element={<VoteSuccessPage />} />
         <Route path="/admin-login" element={<AdminLoginPage />} />
         <Route path="/admin-register" element={<AdminRegisterPage />} />
 
-        {/* Admin Routes - wrapped with sidebar layout */}
-        <Route path="/admin" element={<AdminLayout />}>
+        {/* Protected Voter Routes */}
+        <Route path="/vote-casting" element={<VoterProtectedRoute><VoteCastingPage /></VoterProtectedRoute>} />
+        <Route path="/vote-success" element={<VoteSuccessPage />} />
+
+        {/* Protected Admin Routes - wrapped with sidebar layout */}
+        <Route path="/admin" element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="manage-candidates" element={<ManageCandidatesPage />} />
           <Route path="manage-students" element={<ManageStudentsPage />} />
           <Route path="manage-admins" element={<ManageAdminsPage />} />
           <Route path="reports" element={<ReportsPage />} />
+          <Route path="archives" element={<ArchivesPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="audit-trail" element={<AuditTrailPage />} />
         </Route>

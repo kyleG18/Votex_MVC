@@ -18,9 +18,26 @@ exports.getStats = async (req, res) => {
     const settingsRows = await SettingsModel.getSettings();
     const settings = settingsRows.length > 0 ? settingsRows[0] : {};
 
+    // Aggregate voter turnout per course
+    const [courseStatsRows] = await db.query(`
+      SELECT
+        COALESCE(NULLIF(TRIM(course), ''), 'Unspecified') AS course,
+        COUNT(*) AS total,
+        SUM(CASE WHEN has_voted = 1 THEN 1 ELSE 0 END) AS voted
+      FROM students
+      GROUP BY COALESCE(NULLIF(TRIM(course), ''), 'Unspecified')
+      ORDER BY course ASC
+    `);
+    const courseStats = courseStatsRows.map(row => ({
+      course: row.course,
+      total: Number(row.total),
+      voted: Number(row.voted),
+      notVoted: Number(row.total) - Number(row.voted)
+    }));
+
     res.json({
       success: true,
-      stats: { totalRegisteredVoters, totalVotesCast, settings }
+      stats: { totalRegisteredVoters, totalVotesCast, settings, courseStats }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Database error', error: error.message });

@@ -142,21 +142,25 @@
 
 .candidate-card__name-row {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
 }
 
 .candidate-card__name {
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: var(--slate-900);
   letter-spacing: -0.02em;
   margin: 0;
+  line-height: 1.25;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
 }
 
 .candidate-card__partylist-badge {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--primary-600);
   background: var(--primary-50);
@@ -165,10 +169,15 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   border: 1px solid var(--primary-100);
+  flex-shrink: 0;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .candidate-card__tagline {
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   color: var(--slate-500);
   line-height: 1.45;
   margin: 0;
@@ -239,17 +248,17 @@
   }
   
   .candidate-card__avatar-container {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
     border-radius: 18px;
   }
   
   .candidate-card__name {
-    font-size: 1.15rem;
+    font-size: 1rem;
   }
   
   .candidate-card__tagline {
-    font-size: 0.875rem;
+    font-size: 0.82rem;
     -webkit-line-clamp: 1;
   }
   

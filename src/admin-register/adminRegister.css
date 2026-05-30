@@ -214,6 +214,55 @@
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
 }
 
+/* RFID Registration Field */
+.admin-register__rfid-field {
+  background: var(--slate-50);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--slate-300);
+  margin-top: var(--space-2);
+  transition: all 0.3s;
+}
+
+.admin-register__rfid-field--success {
+  background: var(--success-50);
+  border-color: var(--success-400);
+  border-style: solid;
+}
+
+.admin-register__rfid-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: var(--space-2);
+}
+
+.admin-register__rfid-input-wrapper .icon {
+  position: absolute;
+  left: var(--space-3);
+  font-size: 1.25rem;
+  color: var(--slate-400);
+}
+
+.admin-register__rfid-input {
+  width: 100%;
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-10);
+  border: 2px solid var(--slate-300);
+  border-radius: var(--radius-lg);
+  font-family: monospace;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  background: white;
+}
+
+.admin-register__rfid-input-wrapper .success-icon {
+  position: absolute;
+  right: var(--space-3);
+  font-size: 1.25rem;
+  color: var(--success-500);
+  animation: scaleIn 0.3s ease-out;
+}
+
 /* Button */
 .admin-register__btn {
   display: flex;

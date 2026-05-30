@@ -203,3 +203,83 @@
     width: 100%;
   }
 }
+
+/* Course Turnout section styling */
+.reports__course-section {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--slate-100);
+}
+
+.reports__course-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.reports__course-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--primary-600);
+}
+
+.reports__table-wrapper {
+  overflow-x: auto;
+}
+
+.reports__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.reports__table th,
+.reports__table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--slate-100);
+  font-size: var(--font-size-sm);
+  color: var(--slate-700);
+}
+
+.reports__table th {
+  font-weight: 700;
+  color: var(--slate-500);
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.5px;
+}
+
+.reports__table tbody tr:hover td {
+  background: var(--slate-50);
+}
+
+.reports__table-turnout {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 180px;
+}
+
+.reports__table-pct {
+  font-weight: 700;
+  color: var(--slate-800);
+  min-width: 45px;
+}
+
+.reports__table-bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--slate-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.reports__table-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+  border-radius: var(--radius-full);
+}
+

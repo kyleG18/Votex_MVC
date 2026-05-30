@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import { HiOutlineShieldCheck, HiOutlineKey, HiOutlineUser, HiOutlineLockClosed } from 'react-icons/hi2';
+import { HiOutlineShieldCheck, HiOutlineKey, HiOutlineUser, HiOutlineLockClosed, HiOutlineIdentification, HiOutlineCheckCircle } from 'react-icons/hi2';
 import './adminRegister.css';
 
 function AdminRegisterPage() {
@@ -10,8 +10,10 @@ function AdminRegisterPage() {
     fullName: '',
     username: '',
     password: '',
-    authKey: ''
+    authKey: '',
+    rfid_uid: ''
   });
+  const rfidInputRef = useRef(null);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -25,8 +27,8 @@ function AdminRegisterPage() {
     setErrorMsg('');
     setSuccessMsg('');
 
-    if (!formData.fullName || !formData.username || !formData.password || !formData.authKey) {
-      setErrorMsg('Please fill in all fields.');
+    if (!formData.fullName || !formData.username || !formData.password || !formData.authKey || !formData.rfid_uid) {
+      setErrorMsg('Please fill in all fields and scan your RFID card.');
       return;
     }
 
@@ -141,6 +143,30 @@ function AdminRegisterPage() {
                 value={formData.authKey}
                 onChange={handleChange}
               />
+            </div>
+
+            {/* RFID Scanner */}
+            <div className={`admin-register__rfid-field ${formData.rfid_uid ? 'admin-register__rfid-field--success' : ''}`}>
+              <label className="admin-register__label">
+                <HiOutlineIdentification className="admin-register__key-icon" /> Smart Card Registration (Tap card now)
+              </label>
+              <div className="admin-register__rfid-input-wrapper">
+                <HiOutlineIdentification className="icon" />
+                <input 
+                  type="text" 
+                  ref={rfidInputRef} 
+                  placeholder="Waiting for scan…"
+                  name="rfid_uid"
+                  value={formData.rfid_uid}
+                  onChange={handleChange}
+                  className="admin-register__rfid-input"
+                  autoFocus 
+                />
+                {formData.rfid_uid && <HiOutlineCheckCircle className="success-icon" />}
+              </div>
+              <p className="admin-register__hint">
+                {formData.rfid_uid ? `Card Linked: ${formData.rfid_uid}` : 'Click here then tap your Admin RFID card.'}
+              </p>
             </div>
 
             {/* Submit */}

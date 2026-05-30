@@ -9,8 +9,11 @@ const adminController = require('../controllers/adminController');
 // POST /api/admins/register - Register a new admin
 router.post('/register', adminController.register);
 
-// POST /api/admins/login - Admin login
+// POST /api/admins/login - Admin username+password login
 router.post('/login', adminController.login);
+
+// POST /api/admins/login-rfid - Admin RFID login
+router.post('/login-rfid', adminController.loginRfid);
 
 // GET /api/admins/pending - Get all pending admins
 router.get('/pending', adminController.getPending);
@@ -26,5 +29,8 @@ router.delete('/reject/:id', adminController.reject);
 
 // DELETE /api/admins/:id - Delete an admin
 router.delete('/:id', adminController.deleteAdmin);
+
+// PUT /api/admins/:id - Update admin details
+router.put('/:id', adminController.updateAdmin);
 
 module.exports = router;
